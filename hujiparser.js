@@ -2,52 +2,43 @@
  * Created by gbenami on 12/21/2014.
  */
 
-var HttpRequest = function (){
-    this.req_method = null;
-    this.req_url = null;
-    this.req_http_ver = null;
-    this.req_fields = {};
-    this.req_body = null;
-};
-
-HttpRequest.prototype.print = function () {
-    console.log(this.req_method);
-    console.log(this.req_url);
-    console.log(this.req_http_ver);
-    console.log(this.req_fields);
-    console.log(this.req_body);
-};
+var request = require('./httprequest');
+var response = require('./httpresponse');
 
 function trim(str){
     return ( str || '' ).replace( /^\s+|\s+$/g, '' );
 }
 
-function parse(req_string) {
+function parse(req_string){
     var req_lines = req_string.split("\r\n");
-    var http_req = new HttpRequest();
+    var http_req = new request.HttpRequest();
     var sep_loc = 0;
     var line_index = 0;
-    http_req.req_method = req_lines[line_index].substring(0,req_lines[line_index].indexOf(" "));
+    http_req.method = req_lines[line_index].substring(0,req_lines[line_index].indexOf(" "));
     req_lines[line_index] = req_lines[line_index].substr(req_lines[line_index].indexOf(" ")+1);
-    http_req.req_url = req_lines[line_index].substring(0,req_lines[line_index].indexOf(" "));
+    http_req.url = req_lines[line_index].substring(0,req_lines[line_index].indexOf(" "));
     req_lines[line_index] = req_lines[line_index].split("HTTP/")[1];
-    http_req.req_http_ver = req_lines[line_index];
+    http_req.http_ver = req_lines[line_index];
     line_index += 1;
     while ((line_index < req_lines.length) && (req_lines[line_index] != "")){
         sep_loc = req_lines[line_index].indexOf(":");
-        http_req.req_fields[trim(req_lines[line_index].substring(0,sep_loc))] = trim(req_lines[line_index].substring(sep_loc+1));
+        http_req.request_fields[trim(req_lines[line_index].substring(0,sep_loc))] = trim(req_lines[line_index].substring(sep_loc+1));
         line_index += 1;
     }
-    if (("Content-Length" in http_req.req_fields) && (http_req.req_fields["Content-Length"] != "0")){
-        line_index += 2;
-        http_req.req_body = "";
-        http_req.req_body += req_lines[line_index++];
+    if (("Content-Length" in http_req.request_fields) && (http_req.request_fields["Content-Length"] != "0")){
+        line_index += 1;
+        http_req.message_body = "";
+        http_req.message_body += req_lines[line_index++];
         while (line_index < req_lines.length){
-            http_req.req_body += "\r\n";
-            http_req.req_body += req_lines[line_index++];
+            http_req.message_body += "\r\n";
+            http_req.message_body += req_lines[line_index++];
         }
     }
     return http_req;
+}
+
+function stringify(res_object){
+
 }
 
 exports.parse = parse;
