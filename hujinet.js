@@ -6,7 +6,7 @@ var net = require('net');
 var hujiparser = require('./hujiparser');
 var fs = require('fs');
 var httpresponse = require('./httpresponse');
-
+var types = require('./mimetypes');
 
 
 function create_http_response(http_req){
@@ -14,6 +14,8 @@ function create_http_response(http_req){
     http_res.http_ver = http_req.http_ver;
     http_res.general_headers["Date"] = new Date().toUTCString();
     http_res.general_headers["Connection"] = http_req.request_fields["Connection"];
+    var type = url.parse(http_req.url).pathname.substr(lastIndexOf("."));
+    http_res.entity_headers["Content-Type"] = types.get_type(type);
     switch (http_req.method) {
         case "GET":
             http_res.status_code = "200";
