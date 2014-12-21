@@ -7,6 +7,8 @@ var hujiparser = require('./hujiparser');
 var fs = require('fs');
 var httpresponse = require('./httpresponse');
 var types = require('./mimetypes');
+var url = require('url');
+
 
 
 function create_http_response(http_req){
@@ -14,21 +16,17 @@ function create_http_response(http_req){
     http_res.http_ver = http_req.http_ver;
     http_res.general_headers["Date"] = new Date().toUTCString();
     http_res.general_headers["Connection"] = http_req.request_fields["Connection"];
-    var type = url.parse(http_req.url).pathname.substr(lastIndexOf("."));
+    var url_pathname = url.parse(http_req.url).pathname;
+    var type = url_pathname.substr(url_pathname.lastIndexOf("."));
     http_res.entity_headers["Content-Type"] = types.get_type(type);
+    var stat = fs.statSync(url_pathname);
+    http_res["Content-Length"] = stat["size"];
+
     switch (http_req.method) {
         case "GET":
             http_res.status_code = "200";
             http_res.reason_phrase = "OK";
-
-
     }
-    http_res.status_code = null;
-    http_res.reason_phrase = null;
-
-    http_res.general_headers = {};
-    http_res.response_headers = {};
-    http_res.entity_headers = {};
 
     return http_res;
 }
@@ -37,14 +35,10 @@ exports.getServer = function(port){
     var server = net.createServer(function(socket) { //'connection' listener
         console.log('server connected');
 
-        socket.setNoDelay(noDelay=true);
-        socket.write('Hello World!\r\n');
-        socket.pipe(socket);
-
         socket.on('data', function(data) {
             console.log('Data was received');
-            socket.write(data);
-            var http_req = hujiparser.parse(data);
+            console.log(data.toString());
+            var http_req = hujiparser.parse(data.toString());
             var http_res = create_http_response(http_req);
             socket.write(hujiparser.stringify(http_res));
             if ((http_req.method == "GET") || (http_req.method == "POST")){
@@ -75,3 +69,5 @@ exports.getServer = function(port){
     });
     return server;
 };
+
+//http://localhost:8124/Users/aabel/WebstormProjects/internetEX3/main.js

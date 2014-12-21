@@ -67,14 +67,14 @@ exports.stringify = stringify;
 //Host: example.com\r\n\
 //Content-Type: application/x-www-form-urlencoded\r\n\
 //Content-Length: 19\r\n\r\n\
-//name=ruturajv&sex=m\r\n6767\r\n67676\r\n676767\r\n8686868\r\n6868686\r\n");
-//tries.print();
-
-var res = new httpresponse.HttpResponse();
-res.http_ver = "1.1";
-res.status_code = "200";
-res.reason_phrase = "OK";
-res.general_headers = {"one":"ones","two":"twos"};
-res.entity_headers = {"alpha":"alphas"};
-res.print();
-console.log(stringify(res));
+////name=ruturajv&sex=m\r\n6767\r\n67676\r\n676767\r\n8686868\r\n6868686\r\n");
+////tries.print();
+//
+//var res = new httpresponse.HttpResponse();
+//res.http_ver = "1.1";
+//res.status_code = "200";
+//res.reason_phrase = "OK";
+//res.general_headers = {"one":"ones","two":"twos"};
+//res.entity_headers = {"alpha":"alphas"};
+//res.print();
+//console.log(stringify(res));
