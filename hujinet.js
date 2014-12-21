@@ -44,9 +44,11 @@ exports.getServer = function(port){
             socket.write(data);
             var http_req = hujiparser.parse(data);
             var http_res = create_http_response(http_req);
-
-            /*TO-DO - add the part of sending back the response */
-
+            socket.write(hujiparser.stringify(http_res));
+            if ((http_req.method == "GET") || (http_req.method == "POST")){
+                var fileAsAstream = fs.createReadStream(url.parse(http_req.url).pathname);
+                fileAsAstream.pipe(socket);
+            }
         });
 
         socket.on('end', function() {
