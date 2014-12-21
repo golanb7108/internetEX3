@@ -5,6 +5,30 @@
 var net = require('net');
 var hujiparser = require('./hujiparser');
 var fs = require('fs');
+var httpresponse = require('./httpresponse');
+
+function set_field(field, val){
+    this[field] = val;
+}
+
+function create_http_response(http_req){
+    var http_res = new httpresponse.HttpResponse();
+    http_res.http_ver = http_req.http_ver;
+    switch (http_req.method) {
+        case "GET":
+            http_res.status_code = "200";
+            http_res.reason_phrase = "OK";
+
+    }
+    http_res.status_code = null;
+    http_res.reason_phrase = null;
+
+    http_res.general_headers = {};
+    http_res.response_headers = {};
+    http_res.entity_headers = {};
+
+    return http_res;
+}
 
 exports.getServer = function(port){
     var server = net.createServer(function(socket) { //'connection' listener
@@ -17,7 +41,10 @@ exports.getServer = function(port){
         socket.on('data', function(data) {
             console.log('Data was received');
             socket.write(data);
-            //var http_request = hujiparser.parse(data);
+            var http_req = hujiparser.parse(data);
+            var http_res = create_http_response(http_req);
+
+            /*TO-DO - add the part of sending back the response */
 
         });
 
