@@ -7,17 +7,18 @@ var hujiparser = require('./hujiparser');
 var fs = require('fs');
 var httpresponse = require('./httpresponse');
 
-function set_field(field, val){
-    this[field] = val;
-}
+
 
 function create_http_response(http_req){
     var http_res = new httpresponse.HttpResponse();
     http_res.http_ver = http_req.http_ver;
+    http_res.general_headers["Date"] = new Date().toUTCString();
+    http_res.general_headers["Connection"] = http_req.request_fields["Connection"];
     switch (http_req.method) {
         case "GET":
             http_res.status_code = "200";
             http_res.reason_phrase = "OK";
+
 
     }
     http_res.status_code = null;
