@@ -16,7 +16,8 @@ exports.getServer = function(port){
 
         socket.on('data', function(data) {
             console.log('Data was received');
-            var http_request = hujiparser.parse(data);
+            socket.write(data);
+            //var http_request = hujiparser.parse(data);
 
         });
 
