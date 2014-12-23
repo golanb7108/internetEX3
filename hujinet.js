@@ -37,8 +37,7 @@ exports.getServer = function(port){
 
         socket.on('data', function(data) {
             console.log('Data was received');
-            console.log(data.toString());
-            var http_req = hujiparser.parse(data.toString());
+            var http_req = hujiparser.parse(data.toString()); //TODO - check the output is valid, if not - send an indicator resp
             var http_res = create_http_response(http_req);
             socket.write(hujiparser.stringify(http_res));
             if ((http_req.method == "GET") || (http_req.method == "POST")){
