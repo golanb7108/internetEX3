@@ -9,6 +9,7 @@ var HttpResponse = function (){
     this.general_headers = {};
     this.response_headers = {};
     this.entity_headers = {};
+    this.message_body = null;
 };
 
 HttpResponse.prototype.print = function () {
@@ -18,6 +19,7 @@ HttpResponse.prototype.print = function () {
     console.log(this.general_headers);
     console.log(this.response_headers);
     console.log(this.entity_headers);
+    console.log(this.message_body);
 };
 
 exports.HttpResponse = HttpResponse;
