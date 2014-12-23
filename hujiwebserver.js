@@ -9,7 +9,7 @@ var http_server;
 
 exports.start = function(port,rootFolder,callback)
 {
-    http_server = hujinet.getServer(port);
+    http_server = hujinet.getServer(port, rootFolder);
 };
 
 exports.stop = function() {
