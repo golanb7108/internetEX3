@@ -14,8 +14,8 @@ function check_close(http_req){
     if (http_req.request_fields["Connection"] && http_req.request_fields["Connection"].toLowerCase() === "close"){
         return true;
     }
-    if ((http_req.http_ver === '1.0') && ( http_req.request_fields["Connection"] && http_req.request_fields["Connection"].toLowerCase() === "keep-alive")){
-        return false;
+    if ((http_req.http_ver === '1.0') && ( http_req.request_fields["Connection"] && http_req.request_fields["Connection"].toLowerCase() !== "keep-alive")){
+        return true;
     }
     return false;
 }
@@ -33,10 +33,7 @@ function writeResp(response, socket , close_socket ){
 function create_http_response(http_req, socket){
     var http_res = new httpresponse.HttpResponse();
     var file;
-    var url_pathname = url.parse(http_req.url).pathname;
-    var type = url_pathname.substr(url_pathname.lastIndexOf("."));
     http_res.general_headers["Date"] = new Date().toUTCString();
-
     if (!http_req.method)
     {
         http_res.status_code = "500";
@@ -47,7 +44,8 @@ function create_http_response(http_req, socket){
         writeResp(hujiparser.stringify(http_res), socket, true);
         return;
     }
-
+    var url_pathname = url.parse(http_req.url).pathname;
+    var type = url_pathname.substr(url_pathname.lastIndexOf("."));
     http_res.entity_headers["Content-Type"] = types.get_type(type);
     http_res.http_ver = http_req.http_ver;
     http_res.general_headers["Connection"] = http_req.request_fields["Connection"];
@@ -62,7 +60,6 @@ function create_http_response(http_req, socket){
             http_res.entity_headers["Content-Type"] = "text/plain";
             http_res.general_headers["Connection"] = "close";
             http_res.message_body = "The requested URL " + file + " was not found on this server";
-            console.log("no file: " + err.message);
             writeResp(hujiparser.stringify(http_res), socket, true);
             return;
         }
@@ -84,7 +81,7 @@ function create_http_response(http_req, socket){
         fs.exists(file_name, function(exists){
             if (exists){
                 var file_stream = fs.createReadStream(file_name);
-                file_stream.pipe(socket);
+                file_stream.pipe(socket, {end:closeConn});
             }
         });
     });
@@ -94,11 +91,10 @@ function create_http_response(http_req, socket){
 exports.getServer = function(port, rootFolder){
     root = rootFolder;
     var server = net.createServer(function(socket) { //'connection' listener
-        console.log('server connected');
+        socket.setTimeout(2000);
         socket.on('data', function(data) {
-            socket.setTimeout(2000);
 
-            console.log('Data was received');
+
             var req_list = hujiparser.parse(data.toString());
             for (var i = 0; i < req_list.length ; i++){
                 create_http_response(req_list[i], socket);
@@ -110,9 +106,9 @@ exports.getServer = function(port, rootFolder){
             socket.destroy();
         });
 
-        socket.on('close', function() {
-            console.log('server disconnected');
+        socket.on('close', function(){
         });
+
 
         socket.on('error', console.log);
     });
