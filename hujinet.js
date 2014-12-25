@@ -86,7 +86,6 @@ function create_http_response(http_req, socket){
         }
         writeResp(hujiparser.stringify(http_res), socket, close_conn);
 
-
         //send the file it self
         var file_name = url.parse(http_req.url).pathname;
         if (file_name.charAt(0) === '/')
