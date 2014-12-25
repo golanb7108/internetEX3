@@ -9,7 +9,16 @@ var httpresponse = require('./httpresponse');
 var types = require('./mimetypes');
 var url = require('url');
 var root;
-var socket;
+
+function check_close(http_req){
+    if (http_req.request_fields["Connection"] && http_req.request_fields["Connection"].toLowerCase() === "close"){
+        return true;
+    }
+    if ((http_req.http_ver === '1.0') && ( http_req.request_fields["Connection"] && http_req.request_fields["Connection"].toLowerCase() === "keep-alive")){
+        return false;
+    }
+    return false;
+}
 
 
 function writeResp(response, socket , close_socket ){
@@ -19,7 +28,6 @@ function writeResp(response, socket , close_socket ){
             socket.end();
         }
     });
-
 }
 
 function create_http_response(http_req, socket){
@@ -33,6 +41,7 @@ function create_http_response(http_req, socket){
     http_res.http_ver = http_req.http_ver;
     http_res.general_headers["Date"] = new Date().toUTCString();
     http_res.general_headers["Connection"] = http_req.request_fields["Connection"];
+    var closeConn = check_close(http_req);
     file = '\/' + root + url_pathname;
     fs.stat(file, function (err, stats) {
         if (err) {
@@ -42,8 +51,7 @@ function create_http_response(http_req, socket){
             http_res.general_headers["Connection"] = "close";
             http_res.message_body = "The requested URL " + file + " was not found on this server"
             console.log("no file: " + err.message);
-            writeResp(hujiparser.stringify(http_res), socket, http_res.general_headers["Connection"] == "close");
-            //socket.write(hujiparser.stringify(http_res));
+            writeResp(hujiparser.stringify(http_res), socket, closeConn);
             return;
         }
         http_res.entity_headers["Content-Length"] = stats.size;
@@ -52,11 +60,11 @@ function create_http_response(http_req, socket){
                 http_res.status_code = "200";
                 http_res.reason_phrase = "OK";
         }
-        writeResp(hujiparser.stringify(http_res), socket, http_res.general_headers["Connection"] == "close");
+        writeResp(hujiparser.stringify(http_res), socket, closeConn);
 
 
         //send the file it self
-        var file_name = '\/' + root + url.parse(http_req.url).pathname
+        var file_name = '\/' + root + url.parse(http_req.url).pathname;
         fs.exists(file_name, function(exists){
             if (exists){
                 var file_stream = fs.createReadStream(file_name);
@@ -70,8 +78,7 @@ function create_http_response(http_req, socket){
                 http_res.general_headers["Connection"] = "close";
                 http_res.message_body = "The requested URL " + file_name + " was not found on this server"
                 console.log("error message: " + err.message);
-                writeResp(hujiparser.stringify(http_res), socket, http_res.general_headers["Connection"] == "close");
-//                socket.write(hujiparser.stringify(http_res));
+                writeResp(hujiparser.stringify(http_res), socket, closeConn);
                 return;
             });
         });
@@ -82,13 +89,13 @@ function create_http_response(http_req, socket){
 exports.getServer = function(port, rootFolder){
     root = rootFolder;
     var server = net.createServer(function(socket) { //'connection' listener
-        socket.setTimeout(2000);
         console.log('server connected');
         socket.on('data', function(data) {
+            socket.setTimeout(2000);
+
             console.log('Data was received');
             var req_list = hujiparser.parse(data.toString());
             for (var i = 0; i < req_list.length ; i++){
-                req_list[i].print();
                 create_http_response(req_list[i], socket);
             }
         });
@@ -98,9 +105,11 @@ exports.getServer = function(port, rootFolder){
             socket.destroy();
         });
 
-        socket.on('end', function() {
+        socket.on('close', function() {
             console.log('server disconnected');
         });
+
+        socket.on('error', console.log);
     });
 
     server.on('error', function (e) {
@@ -130,5 +139,3 @@ exports.getServer = function(port, rootFolder){
     });
     return server;
 };
-
-//http://localhost:8124/Users/aabel/WebstormProjects/internetEX3/main.js

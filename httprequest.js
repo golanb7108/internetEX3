@@ -11,11 +11,12 @@ var HttpRequest = function (){
 };
 
 HttpRequest.prototype.print = function () {
-    console.log(this.method);
+    /*console.log(this.method);
     console.log(this.url);
     console.log(this.http_ver);
     console.log(this.request_fields);
-    console.log(this.message_body);
+    console.log(this.message_body);*/
+    console.log(this);
 };
 
 exports.HttpRequest = HttpRequest;
