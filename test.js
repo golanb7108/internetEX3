@@ -19,7 +19,7 @@ var options = {
 console.log('Current directory: ' + process.cwd());
 
 console.log(__dirname);
-hujiserver.start(8124, 'EX2/', function(e){
+hujiserver.start(8124, '', function(e){
     e?(console.log(e)):(console.log('server is up'));
 });
 

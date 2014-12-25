@@ -52,6 +52,8 @@ function create_http_response(http_req, socket){
     http_res.http_ver = http_req.http_ver;
     http_res.general_headers["Connection"] = http_req.request_fields["Connection"];
     var closeConn = check_close(http_req);
+    if (url_pathname.charAt(0) === '/')
+        url_pathname = url_pathname.substr(1);
     file = root + url_pathname;
     fs.stat(file, function (err, stats) {
         if (err) {
@@ -74,14 +76,16 @@ function create_http_response(http_req, socket){
 
 
         //send the file it self
-        var file_name = root + url.parse(http_req.url).pathname;
+        var file_name = url.parse(http_req.url).pathname;
+        if (file_name.charAt(0) === '/')
+            file_name = file_name.substr(1);
+        file_name = root + file_name;
+
         fs.exists(file_name, function(exists){
             if (exists){
                 var file_stream = fs.createReadStream(file_name);
                 file_stream.pipe(socket);
             }
-
-
         });
     });
 }
