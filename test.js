@@ -100,7 +100,6 @@ function load_test(){
             });
         });
     }
-
 }
 
 /*Testing that the connection is kept-alive*/
