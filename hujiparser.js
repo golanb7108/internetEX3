@@ -3,7 +3,6 @@
  */
 
 var httprequest = require('./httprequest');
-var httpresponse = require('./httpresponse');
 
 var LINE_END = "\r\n";
 var HTTP_STR = "HTTP/";
