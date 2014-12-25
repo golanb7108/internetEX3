@@ -43,9 +43,8 @@ function create_http_response(http_req, socket){
         http_res = new httpresponse.HttpResponse(), // New http response object
         file,                                                     // Asked file
         file_stream,                             // The stream of an asked file
-        url_pathname = url.parse(http_req.url).pathname, // file's URL pathname
-        type = url_pathname.substr(
-                url_pathname.lastIndexOf("."));                  // file's type
+        url_pathname,                                    // file's URL pathname
+        type;                                                    // file's type
     http_res.general_headers["Date"] = new Date().toUTCString();
 
     if (!http_req.method)
@@ -58,7 +57,8 @@ function create_http_response(http_req, socket){
         writeResp(hujiparser.stringify(http_res), socket, true);
         return;
     }
-
+    url_pathname = url.parse(http_req.url).pathname;
+    type = url_pathname.substr(url_pathname.lastIndexOf("."));
     http_res.entity_headers["Content-Type"] = types.get_type(type);
     http_res.http_ver = http_req.http_ver;
     http_res.general_headers["Connection"] =
@@ -86,6 +86,7 @@ function create_http_response(http_req, socket){
         }
         writeResp(hujiparser.stringify(http_res), socket, close_conn);
 
+
         //send the file it self
         var file_name = url.parse(http_req.url).pathname;
         if (file_name.charAt(0) === '/')
@@ -93,9 +94,9 @@ function create_http_response(http_req, socket){
         file_name = root + file_name;
 
         fs.exists(file_name, function (exists){
-            if (exists){
+            if (exists){ 
                 file_stream = fs.createReadStream(file_name);
-                file_stream.pipe(socket);
+                file_stream.pipe(socket, {end:close_conn});
             }
         });
     });
@@ -104,14 +105,10 @@ function create_http_response(http_req, socket){
 /* Create new server on port */
 exports.getServer = function (port, rootFolder){
     root = rootFolder;
-    var server = net.createServer(function (socket) { //'connection' listener
-        var req_list;                                 // List of requests
-        console.log('server connected');
+    var server = net.createServer(function (socket){ //'connection' listener
+        socket.setTimeout(2000);
         socket.on('data', function (data){
-            socket.setTimeout(2000);
-
-            console.log('Data was received');
-            req_list = hujiparser.parse(data.toString());
+            var req_list = hujiparser.parse(data.toString()); // List of requests
             for (var i = 0; i < req_list.length ; i++){
                 create_http_response(req_list[i], socket);
             }
