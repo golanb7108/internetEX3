@@ -1,40 +1,51 @@
 /**
- * Created by gbenami on 12/21/2014.
+ * Created by Amit Abel and Golan Ben Ami
  */
 
-var net = require('net');
-var hujiparser = require('./hujiparser');
+/* All Requires */
 var fs = require('fs');
 var httpresponse = require('./httpresponse');
+var hujiparser = require('./hujiparser');
+var net = require('net');
 var types = require('./mimetypes');
 var url = require('url');
-var root;
 
+var root; // The root directory
+
+/* Check if the socket has to be closed after http request */
 function check_close(http_req){
-    if (http_req.request_fields["Connection"] && http_req.request_fields["Connection"].toLowerCase() === "close"){
+    if (http_req.request_fields["Connection"] &&
+            http_req.request_fields["Connection"].toLowerCase() === "close"){
         return true;
     }
-    if ((http_req.http_ver === '1.0') && ( http_req.request_fields["Connection"] && http_req.request_fields["Connection"].toLowerCase() === "keep-alive")){
-        return false;
+    if ((http_req.http_ver === '1.0') &&
+            (http_req.request_fields["Connection"] &&
+            http_req.request_fields["Connection"].toLowerCase() !==
+            "keep-alive")){
+        return true;
     }
     return false;
 }
 
-
+/* write response into socket and close the socket afterwards if needed */
 function writeResp(response, socket , close_socket ){
     socket.write(response.toString(),'binary');
-    socket.on('drain', function(){
+    socket.on('drain', function (){
         if (close_socket){
             socket.end();
         }
     });
 }
 
+/* Create new http response from http request */
 function create_http_response(http_req, socket){
-    var http_res = new httpresponse.HttpResponse();
-    var file;
-    var url_pathname = url.parse(http_req.url).pathname;
-    var type = url_pathname.substr(url_pathname.lastIndexOf("."));
+    var close_conn,                       // Check if socket needs to be closed
+        http_res = new httpresponse.HttpResponse(), // New http response object
+        file,                                                     // Asked file
+        file_stream,                             // The stream of an asked file
+        url_pathname = url.parse(http_req.url).pathname, // file's URL pathname
+        type = url_pathname.substr(
+                url_pathname.lastIndexOf("."));                  // file's type
     http_res.general_headers["Date"] = new Date().toUTCString();
 
     if (!http_req.method)
@@ -50,19 +61,20 @@ function create_http_response(http_req, socket){
 
     http_res.entity_headers["Content-Type"] = types.get_type(type);
     http_res.http_ver = http_req.http_ver;
-    http_res.general_headers["Connection"] = http_req.request_fields["Connection"];
-    var closeConn = check_close(http_req);
+    http_res.general_headers["Connection"] =
+            http_req.request_fields["Connection"];
+    close_conn = check_close(http_req);
     if (url_pathname.charAt(0) === '/')
         url_pathname = url_pathname.substr(1);
     file = root + url_pathname;
-    fs.stat(file, function (err, stats) {
+    fs.stat(file, function (err, stats){
         if (err) {
             http_res.status_code = "404";
             http_res.reason_phrase = "Not found";
             http_res.entity_headers["Content-Type"] = "text/plain";
             http_res.general_headers["Connection"] = "close";
-            http_res.message_body = "The requested URL " + file + " was not found on this server";
-            console.log("no file: " + err.message);
+            http_res.message_body = "The requested URL " + file +
+                    " was not found on this server";
             writeResp(hujiparser.stringify(http_res), socket, true);
             return;
         }
@@ -72,8 +84,7 @@ function create_http_response(http_req, socket){
                 http_res.status_code = "200";
                 http_res.reason_phrase = "OK";
         }
-        writeResp(hujiparser.stringify(http_res), socket, closeConn);
-
+        writeResp(hujiparser.stringify(http_res), socket, close_conn);
 
         //send the file it self
         var file_name = url.parse(http_req.url).pathname;
@@ -81,57 +92,58 @@ function create_http_response(http_req, socket){
             file_name = file_name.substr(1);
         file_name = root + file_name;
 
-        fs.exists(file_name, function(exists){
+        fs.exists(file_name, function (exists){
             if (exists){
-                var file_stream = fs.createReadStream(file_name);
+                file_stream = fs.createReadStream(file_name);
                 file_stream.pipe(socket);
             }
         });
     });
 }
 
-
-exports.getServer = function(port, rootFolder){
+/* Create new server on port */
+exports.getServer = function (port, rootFolder){
     root = rootFolder;
-    var server = net.createServer(function(socket) { //'connection' listener
+    var server = net.createServer(function (socket) { //'connection' listener
+        var req_list;                                 // List of requests
         console.log('server connected');
-        socket.on('data', function(data) {
+        socket.on('data', function (data){
             socket.setTimeout(2000);
 
             console.log('Data was received');
-            var req_list = hujiparser.parse(data.toString());
+            req_list = hujiparser.parse(data.toString());
             for (var i = 0; i < req_list.length ; i++){
                 create_http_response(req_list[i], socket);
             }
         });
 
-        socket.on('timeout', function(){
+        socket.on('timeout', function (){
             socket.end();
             socket.destroy();
         });
 
-        socket.on('close', function() {
+        socket.on('close', function (){
             console.log('server disconnected');
         });
 
         socket.on('error', console.log);
     });
 
-    server.on('error', function (e) {
-        if (e.code == 'EADDRINUSE') {
+    server.on('error', function (e){
+        if (e.code === 'EADDRINUSE') {
             console.log('Address in use, retrying...');
-            setTimeout(function () {
+            setTimeout(function (){
                 server.close();
-                server.listen(port, function() { //'listening' listener
+                server.listen(port, function (){ //'listening' listener
                     console.log('server bound');
                 });
             }, 1000);
         }
-        if (e.code == 'ECONNRESET') {
+        if (e.code === 'ECONNRESET') {
             console.log('Address in use, retrying...');
-            setTimeout(function () {
+            setTimeout(function (){
                 server.close();
-                server.listen(port, function() { //'listening' listener
+                server.listen(port, function (){ //'listening' listener
                     console.log('server bound');
                 });
             }, 1000);
@@ -139,7 +151,7 @@ exports.getServer = function(port, rootFolder){
         console.log(e.code);
     });
     server.maxConnections = 1024;
-    server.listen(port, function() { //'listening' listener
+    server.listen(port, function (){ //'listening' listener
         console.log('server bound');
     });
     return server;

@@ -1,7 +1,8 @@
 /**
- * Created by aabel on 21-Dec-14.
+ * Created by Amit Abel and Golan Ben Ami
  */
 
+/* HttpResponse constructor */
 var HttpResponse = function (){
     this.http_ver = null;
     this.status_code = null;
@@ -12,7 +13,8 @@ var HttpResponse = function (){
     this.message_body = null;
 };
 
-HttpResponse.prototype.print = function () {
+/* HttpResponse print */
+HttpResponse.prototype.print = function (){
     console.log(this.http_ver);
     console.log(this.status_code);
     console.log(this.reason_phrase);

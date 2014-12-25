@@ -1,18 +1,24 @@
 /**
- * Created by gbenami on 12/21/2014.
+ * Created by Amit Abel and Golan Ben Ami
  */
 
+/* All requires */
 var hujinet = require('./hujinet');
 
-var http_server;
+/* Servers list */
+var http_servers = [];
+var server_id = 0;
 
-
-exports.start = function(port,rootFolder,callback)
-{
-    http_server = hujinet.getServer(port, rootFolder);
+/* Start a new server and return its id */
+exports.start = function (port, rootFolder, callback){
+    http_servers[server_id] = hujinet.getServer(port, rootFolder);
+    http_servers[server_id].on('error', callback);
+    return server_id++;
 };
 
-exports.stop = function() {
-    http_server.close();
+/* Close a server by its id */
+exports.stop = function (server_id, callback){
+    http_server[server_id].close();
+    http_servers[server_id].on('error', callback);
     console.log("Server closed");
 };

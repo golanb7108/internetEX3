@@ -1,7 +1,8 @@
 /**
- * Created by aabel on 21-Dec-14.
+ * Created by Amit Abel and Golan Ben Ami
  */
 
+/* Contains all file types */
 var types = {".323": "text/h323",
     ".3g2": "video/3gpp2",
     ".3gp": "video/3gpp",
@@ -107,10 +108,12 @@ var types = {".323": "text/h323",
     ".dlm": "text/dlm",
     ".doc": "application/msword",
     ".docm": "application/vnd.ms-word.document.macroEnabled.12",
-    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".docx": "application/vnd.openxmlformats-officedocument." +
+            "wordprocessingml.document",
     ".dot": "application/msword",
     ".dotm": "application/vnd.ms-word.template.macroEnabled.12",
-    ".dotx": "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+    ".dotx": "application/vnd.openxmlformats-officedocument." +
+            "wordprocessingml.template",
     ".dsp": "application/octet-stream",
     ".dsw": "text/plain",
     ".dtd": "text/xml",
@@ -328,16 +331,19 @@ var types = {".323": "text/h323",
     ".pnz": "image/png",
     ".pot": "application/vnd.ms-powerpoint",
     ".potm": "application/vnd.ms-powerpoint.template.macroEnabled.12",
-    ".potx": "application/vnd.openxmlformats-officedocument.presentationml.template",
+    ".potx": "application/vnd.openxmlformats-officedocument." +
+            "presentationml.template",
     ".ppa": "application/vnd.ms-powerpoint",
     ".ppam": "application/vnd.ms-powerpoint.addin.macroEnabled.12",
     ".ppm": "image/x-portable-pixmap",
     ".pps": "application/vnd.ms-powerpoint",
     ".ppsm": "application/vnd.ms-powerpoint.slideshow.macroEnabled.12",
-    ".ppsx": "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+    ".ppsx": "application/vnd.openxmlformats-officedocument." +
+            "presentationml.slideshow",
     ".ppt": "application/vnd.ms-powerpoint",
     ".pptm": "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
-    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".pptx": "application/vnd.openxmlformats-officedocument." +
+            "presentationml.presentation",
     ".prf": "application/pics-rules",
     ".prm": "application/octet-stream",
     ".prx": "application/octet-stream",
@@ -398,7 +404,8 @@ var types = {".323": "text/h323",
     ".sitemap": "application/xml",
     ".skin": "application/xml",
     ".sldm": "application/vnd.ms-powerpoint.slide.macroEnabled.12",
-    ".sldx": "application/vnd.openxmlformats-officedocument.presentationml.slide",
+    ".sldx": "application/vnd.openxmlformats-officedocument." +
+            "presentationml.slide",
     ".slk": "application/vnd.ms-excel",
     ".sln": "text/plain",
     ".slupkg-ms": "application/x-ms-license",
@@ -539,10 +546,12 @@ var types = {".323": "text/h323",
     ".xls": "application/vnd.ms-excel",
     ".xlsb": "application/vnd.ms-excel.sheet.binary.macroEnabled.12",
     ".xlsm": "application/vnd.ms-excel.sheet.macroEnabled.12",
-    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".xlsx": "application/vnd.openxmlformats-officedocument." +
+            "spreadsheetml.sheet",
     ".xlt": "application/vnd.ms-excel",
     ".xltm": "application/vnd.ms-excel.template.macroEnabled.12",
-    ".xltx": "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+    ".xltx": "application/vnd.openxmlformats-officedocument." +
+            "spreadsheetml.template",
     ".xlw": "application/vnd.ms-excel",
     ".xml": "text/xml",
     ".xmta": "application/xml",
@@ -563,6 +572,7 @@ var types = {".323": "text/h323",
     ".z": "application/x-compress",
     ".zip": "application/x-zip-compressed"}
 
+/* Return the description of an extension */
 exports.get_type = function(extension){
     return types[extension];
 };
