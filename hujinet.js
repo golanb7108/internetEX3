@@ -119,7 +119,7 @@ exports.getServer = function (port, rootFolder){
         });
 
         socket.on('close', function (){
-            console.log('server disconnected');
+
         });
 
         socket.on('error', console.log);
