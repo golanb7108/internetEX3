@@ -33,25 +33,35 @@ function writeResp(response, socket , close_socket ){
 function create_http_response(http_req, socket){
     var http_res = new httpresponse.HttpResponse();
     var file;
-
     var url_pathname = url.parse(http_req.url).pathname;
     var type = url_pathname.substr(url_pathname.lastIndexOf("."));
+    http_res.general_headers["Date"] = new Date().toUTCString();
+
+    if (!http_req.method)
+    {
+        http_res.status_code = "500";
+        http_res.reason_phrase = "Parsing error";
+        http_res.entity_headers["Content-Type"] = "text/plain";
+        http_res.general_headers["Connection"] = "close";
+        http_res.message_body = "The request was corrupted.";
+        writeResp(hujiparser.stringify(http_res), socket, true);
+        return;
+    }
 
     http_res.entity_headers["Content-Type"] = types.get_type(type);
     http_res.http_ver = http_req.http_ver;
-    http_res.general_headers["Date"] = new Date().toUTCString();
     http_res.general_headers["Connection"] = http_req.request_fields["Connection"];
     var closeConn = check_close(http_req);
-    file = '\/' + root + url_pathname;
+    file = root + url_pathname;
     fs.stat(file, function (err, stats) {
         if (err) {
             http_res.status_code = "404";
             http_res.reason_phrase = "Not found";
             http_res.entity_headers["Content-Type"] = "text/plain";
             http_res.general_headers["Connection"] = "close";
-            http_res.message_body = "The requested URL " + file + " was not found on this server"
+            http_res.message_body = "The requested URL " + file + " was not found on this server";
             console.log("no file: " + err.message);
-            writeResp(hujiparser.stringify(http_res), socket, closeConn);
+            writeResp(hujiparser.stringify(http_res), socket, true);
             return;
         }
         http_res.entity_headers["Content-Length"] = stats.size;
@@ -64,23 +74,14 @@ function create_http_response(http_req, socket){
 
 
         //send the file it self
-        var file_name = '\/' + root + url.parse(http_req.url).pathname;
+        var file_name = root + url.parse(http_req.url).pathname;
         fs.exists(file_name, function(exists){
             if (exists){
                 var file_stream = fs.createReadStream(file_name);
                 file_stream.pipe(socket);
             }
 
-            file_stream.on('error', function (err){
-                http_res.status_code = "404";
-                http_res.reason_phrase = "Not found";
-                http_res.entity_headers["Content-Type"] = "text/plain";
-                http_res.general_headers["Connection"] = "close";
-                http_res.message_body = "The requested URL " + file_name + " was not found on this server"
-                console.log("error message: " + err.message);
-                writeResp(hujiparser.stringify(http_res), socket, closeConn);
-                return;
-            });
+
         });
     });
 }

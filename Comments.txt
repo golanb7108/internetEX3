@@ -1,9 +1,11 @@
-1. TODO:: We should close the connection only if either:
-    TODO:: The version of the HTTP request is 1.0 and there is no ‘Connection: Keep-Alive’ header embedded in that request.
-    TODO:: The request contains a ‘Connection: close’ header (you should close the connection only after completion of the response)
-    TODO:: Timeout (2 seconds since the last data)
-2. TODO - Make sure that if one packet goes bad it won't crash the whole system (exceptions)
-3. TODO - Write the test for this ex: http://taylor.fausak.me/2013/02/17/testing-a-node-js-http-server-with-mocha/
-4. TODO - Deal with parsing exceptions (Amit) - deal with the slashes.
-5. TODO - Write the packets 404, and 504.
-6. TODO - Fix the code according to the guidelines.
+
+    TODO - Deal with parsing exceptions - deal with the slashes, for exception, make method "null" - Amit
+
+    TODO - Write the test for this ex
+    TODO - Fix the code according to the guidelines + comments + README + Partner.
+
+    TODO - Make sure that if one packet goes bad it won't crash the whole system (exceptions)
+    TODO - Keep alive issue
+
+
+    TODO - DONE!!! [ for a parsing exception - return 500 - Golan ] !!!DONE
