@@ -65,7 +65,7 @@ function create_http_response(http_req, socket){
     http_res.general_headers["Connection"] =
             http_req.request_fields["Connection"];
     close_conn = check_close(http_req);
-    file = (__dirname + path.normalize(root) + path.normalize('/' + url_pathname));
+    file = path.join(__dirname, path.normalize(root + url_pathname));
     fs.stat(file, function (err, stats){
         var file_name;
         if (err) {
@@ -88,7 +88,7 @@ function create_http_response(http_req, socket){
 
         //send the file it self
         file_name = url.parse(http_req.url).pathname;
-        file_name = file = (__dirname + path.normalize(root) + path.normalize('/' + file_name));
+        file_name = file = path.join(__dirname, path.normalize(root + file_name));
 
         fs.exists(file_name, function (exists){
             if (exists){ 
