@@ -9,6 +9,7 @@ var hujiparser = require('./hujiparser');
 var net = require('net');
 var types = require('./mimetypes');
 var url = require('url');
+var path = require('path');
 
 var root; // The root directory
 
@@ -64,10 +65,9 @@ function create_http_response(http_req, socket){
     http_res.general_headers["Connection"] =
             http_req.request_fields["Connection"];
     close_conn = check_close(http_req);
-    if (url_pathname.charAt(0) === '/')
-        url_pathname = url_pathname.substr(1);
-    file = root + url_pathname;
+    file = (__dirname + path.normalize(root) + path.normalize('/' + url_pathname));
     fs.stat(file, function (err, stats){
+        var file_name;
         if (err) {
             http_res.status_code = "404";
             http_res.reason_phrase = "Not found";
@@ -87,10 +87,8 @@ function create_http_response(http_req, socket){
         writeResp(hujiparser.stringify(http_res), socket, close_conn);
 
         //send the file it self
-        var file_name = url.parse(http_req.url).pathname;
-        if (file_name.charAt(0) === '/')
-            file_name = file_name.substr(1);
-        file_name = root + file_name;
+        file_name = url.parse(http_req.url).pathname;
+        file_name = file = (__dirname + path.normalize(root) + path.normalize('/' + file_name));
 
         fs.exists(file_name, function (exists){
             if (exists){ 

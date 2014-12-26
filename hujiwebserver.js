@@ -18,7 +18,7 @@ exports.start = function (port, rootFolder, callback){
 
 /* Close a server by its id */
 exports.stop = function (server_id, callback){
-    http_servers[server_id].close();
+    http_servers[server_id].close(callback);
     http_servers[server_id].on('error', callback);
     console.log("Server closed");
 };
