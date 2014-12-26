@@ -76,31 +76,7 @@ function wrong_string_test(){
     con.write('hi http server!!!');
 }
 
-function load_test(){
-    var req;                                          // Given request
-    var load_factor = 1000;    // The number of packets which were sent
-    var load_counter = 0;   // The number of packets which were gotten
-    var i;                                                  // Counter
-    for (i = 0; i < load_factor; i++) {
-        req = http.get(getOptions('localhost', '8124','/main.js','close'),
-                function(resp){
-            resp.on('data', function (data){
-                if (resp.statusCode === 200){
-                    load_counter++;
-                }
-                if (load_counter === 1000){
-                    console.log('load_test success :)');
-                } else if (load_counter < 1000 && i === 999) {
-                    console.log('load_test failed on load_counter: ' +
-                            load_counter);
-                }
-            });
-            resp.on('error',function (error){
-                console.log('expect_404_test failed on: ' + error);
-            });
-        });
-    }
-}
+
 
 /*Testing that the connection is kept-alive*/
 function keep_alive_test(){
@@ -130,7 +106,6 @@ function keep_alive_test(){
 expect_success_test();
 expect_404_test();
 wrong_string_test();
-load_test();
 keep_alive_test();
 
 setTimeout(function (){
