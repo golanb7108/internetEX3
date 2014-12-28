@@ -144,7 +144,6 @@ exports.getServer = function (port, rootFolder){
         }
         console.log(e.code);
     });
-    server.maxConnections = 1024;
     server.listen(port, function (){ //'listening' listener
         console.log('server bound');
     });
