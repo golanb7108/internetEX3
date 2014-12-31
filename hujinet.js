@@ -100,7 +100,7 @@ function create_http_response(http_req, socket){
 }
 
 /* Create new server on port */
-exports.getServer = function (port, rootFolder){
+exports.getServer = function (port, rootFolder, callback){
     root = rootFolder;
     var server = net.createServer(function (socket){ //'connection' listener
         socket.setTimeout(2000);
@@ -123,27 +123,7 @@ exports.getServer = function (port, rootFolder){
         socket.on('error', console.log);
     });
 
-    server.on('error', function (e){
-        if (e.code === 'EADDRINUSE') {
-            console.log('Address in use, retrying...');
-            setTimeout(function (){
-                server.close();
-                server.listen(port, function (){ //'listening' listener
-                    console.log('server bound');
-                });
-            }, 1000);
-        }
-        if (e.code === 'ECONNRESET') {
-            console.log('Address in use, retrying...');
-            setTimeout(function (){
-                server.close();
-                server.listen(port, function (){ //'listening' listener
-                    console.log('server bound');
-                });
-            }, 1000);
-        }
-        console.log(e.code);
-    });
+    server.on('error', callback);
     server.listen(port, function (){ //'listening' listener
         console.log('server bound');
     });
