@@ -4,6 +4,7 @@
 
 var settings = require('settings');
 var httpcookie = require('httpcookie');
+var types = require('./mimetypes');
 
 
 /* HttpResponse constructor */
@@ -17,6 +18,7 @@ var HttpResponse = function (){
     this.response_headers = {};
     this.entity_headers = {};
     this.message_body = null;
+
     this.set  = function (field, value){
         if (typeof field === "object"){
             for (param in field){
@@ -32,9 +34,11 @@ var HttpResponse = function (){
             this.general_headers[field] = value;
         }
     };
+
     this.status = function (code){
         this.status_code = code;
     };
+
     this.get = function (field){
         if (field in this.general_headers){
             return this.general_headers[field];
@@ -46,15 +50,40 @@ var HttpResponse = function (){
             throw settings.invalid_value_error;
         }
     };
+
     this.cookie = function (name, value, options){
         var cookie_created = new httpcookie.Cookie(value, options);
         this.cookies[name] = cookie_created;
     };
+
     this.send = function (body){
-        //todo: build it
+        if ((body !== undefined) && (body !== null)){
+            if (typeof body === 'object') {
+                return this.json(body);
+            } else if (typeof body === 'buffer') {
+                if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined) {
+                    this.set(settings.BODY_TYPE_HEADER, types.get_type('.bin'));
+                }
+            } else {
+                if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined) {
+                    this.set(settings.BODY_TYPE_HEADER, types.get_type('.html'));
+                }
+            }
+            this.message_body = (typeof body === 'number') ? body.toString() : body;
+            if (this.entity_headers[settings.BODY_LENGTH_HEADER] === undefined) {
+                var len = (this.body) ? this.body.length : 0;
+                this.set(settings.BODY_LENGTH_HEADER, len);
+            }
+        }
+        this.socket.write(this.toString(), 'binary');
+        //todo: check for close socket
     };
+
     this.json = function (body){
-        //todo: build it
+        if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined) {
+            this.set(settings.BODY_TYPE_HEADER, types.get_type('.json'));
+        }
+        this.send(JSON.stringify(body));
     };
 };
 

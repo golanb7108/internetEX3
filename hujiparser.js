@@ -5,6 +5,7 @@
 /* All requires */
 var httprequest = require('./httprequest');
 var settings = require('settings');
+var url = require('url');
 
 var not_finished_req; //Contains a string of the last request which its body message
                       // didn't arrive in the last stream
@@ -82,6 +83,7 @@ function parse_request(req_lines){
     var http_req = new httprequest.HttpRequest(),  // The new request object
         line_index = 0,                                // Current line index
         req_header_tmp = req_lines[line_index],            // temporary line
+        url_header,                                            // URL Header
         sep_loc;                          // Index of ':' in header instance
     if (req_header_tmp.indexOf(" ") === -1){
         throw settings.bad_request_format_error;
@@ -94,12 +96,16 @@ function parse_request(req_lines){
     if (req_header_tmp.indexOf(settings.HTTP_STR) === -1){
         throw settings.bad_request_format_error;
     }
-    http_req.url = req_header_tmp.substring(0,
+    url_header = req_header_tmp.substring(0,
                 req_header_tmp.indexOf(settings.HTTP_STR)-1);
+    http_req.path = url.parse(url_header).pathname;
+    http_req.query = url.parse(url_header).query;
+    http_req.host = url.parse(url_header).hostname;
     req_header_tmp = req_header_tmp.split(settings.HTTP_STR)[1];
     if (!trim(req_header_tmp).match(settings.HTTP_VERSION_FORMAT)){
         throw settings.bad_request_format_error;
     }
+    http_req.protocol = settings.HTTP_PROTOCOL;
     http_req.http_ver = req_header_tmp;
     line_index += 1;
     while ((line_index < req_lines.length) && (req_lines[line_index] != "") &&

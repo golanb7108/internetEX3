@@ -38,7 +38,7 @@ var HttpRequest = function (){
         throw settings.invalid_value_error;
     };
     this.is = function (type){
-        var req_type = this.get(BODY_TYPE_HEADER);
+        var req_type = this.get(settings.BODY_TYPE_HEADER);
         var patt = new RegExp(type);
         return patt.test(req_type);
     };

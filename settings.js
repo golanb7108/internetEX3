@@ -10,6 +10,7 @@ exports.invalid_value_error = new Error("Invalid parameter was asked");
 /* Formats */
 exports.LINE_END = "\r\n";
 exports.HTTP_STR = "HTTP/";
+exports.HTTP_PROTOCOL = "http";
 exports.HTTP_VERSION_FORMAT = /1\.[0|1]/;
 exports.BODY_LENGTH_HEADER = "Content-Length";
 exports.BODY_TYPE_HEADER = "Content-Type";
