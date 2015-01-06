@@ -19,6 +19,36 @@ var HttpResponse = function (){
     this.entity_headers = {};
     this.message_body = null;
 
+    this.toString = function (){
+        var header,                          // Header instance
+            cookie,                          // Cookie instance
+            response_str = settings.HTTP_STR; // The new response string
+        response_str += this.http_ver + " ";
+        response_str += this.status_code + " ";
+        response_str += this.reason_phrase + settings.LINE_END;
+        for (header in this.general_headers){
+            response_str += header + ": " + this.general_headers[header] +
+                settings.LINE_END;
+        }
+        for (header in this.response_headers){
+            response_str += header + ": " + this.response_headers[header] +
+                settings.LINE_END;
+        }
+        for (header in this.entity_headers){
+            response_str += header + ": " + this.entity_headers[header] +
+                settings.LINE_END;
+        }
+        for (cookie in this.cookies){
+            response_str += "Set-Cookie: " + cookie + "=" + this.cookies[cookie].toString();
+            settings.LINE_END;
+        }
+        response_str += settings.LINE_END;
+        if (this.message_body){
+            response_str += this.message_body +settings. LINE_END;
+        }
+        return response_str;
+    };
+
     this.set  = function (field, value){
         if (typeof field === "object"){
             for (param in field){
