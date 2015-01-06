@@ -15,7 +15,7 @@ var hujidynamicserver = function ()
         }
         while (index < app.middleware.length){
             if (app.middleware[index].method === "USE" || app.middleware[index].method === req.method ){
-                if (1/*Check if the path fits*/){
+                if (1/* TODO - amit: Check if the path fits*/){
 
                     /* Build the params of the request */
 
