@@ -142,36 +142,31 @@ function middleware(method, path, callback){
 
 
 function does_path_match(req_path, middleware_path){
-
-
-
-
-
-
-
-
-
-
-    return req_path.match(regex_path);
-}
-
-
-
-var parts=path.split('/');
-var str='^';
-for( var i=0; i<parts.length;i++){
-    if (parts[i]=='')
-        continue;
-    str+='\/';
-    if(parts[i].match(/:/g)){
-        str+='(?:([^\/]+?))'
-    }else{
-        str+=parts[i];
+    if(middleware_path.indexOf(':') === -1){
+        var regex = new RegExp('^' + middleware_path, 'i');
+        return regex.test(req_path);
     }
+    else {
+        var midd_path_list = middleware_path.split('\/');
+        if (midd_path_list.length === 0) return true;
 
+        var regex = "^";
+
+        for (var i = 0; i < midd_path_list.length; i++) {
+            if (midd_path_list[i] !== "") {
+                regex += "\/";
+                if (!midd_path_list[i].match(/:/g)) {
+                    regex += midd_path_list[i];
+                }
+                else {
+                    regex += "([^\/]+?)";
+                }
+            }
+        }
+        var theReg = new RegExp(regex, "i");
+        return req_path.match(theReg);
+    }
 }
-str+='\/?';
-return new RegExp(str, 'i');
 
 
 module.exports = hujidynamicserver;
