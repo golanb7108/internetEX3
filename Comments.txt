@@ -1,11 +1,4 @@
 
-Golan:
-    TODO - all : fix the sync between dynamic, web, and net.
-    TODO - web server : write the static function. (static returns a function that does get)
-    TODO - net : suit the net to EX4.
-    TODO - all : the listen functions.
-
-
 Amit:
     TODO - response : terminate socket.
     TODO - response, request : handle cookies.
@@ -19,5 +12,11 @@ Other
     TODO - all : exceptions.
     TODO - all : security instructions.
 
+Test
+    TODO - check the params parsing.
+    TODO - check the xwwformsurlencoded parsing (body).
+    TODO - check the json parsing (body).
+    TODO - check the request cookies parsing.
+    TODO - check the request cookies parsing.
 
 

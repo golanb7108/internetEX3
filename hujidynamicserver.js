@@ -162,9 +162,6 @@ function middleware(method, path, callback){
     this.handler = callback;
 };
 
-
-
-
 function does_path_match(req_path, middleware_path){
     console.log("app.does_path_match");
     console.log("req_path: " + req_path);
