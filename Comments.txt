@@ -19,5 +19,11 @@ Other
     TODO - all : exceptions.
     TODO - all : security instructions.
 
+Test
+    TODO - check the params parsing.
+    TODO - check the xwwformsurlencoded parsing (body).
+    TODO - check the json parsing (body).
+    TODO - check the request cookies parsing.
+    TODO - check the request cookies parsing.
 
 

@@ -10,14 +10,6 @@ var hujidynamicserver = require('./hujidynamicserver'),
     url = require('url'),
     path = require('path');
 
-function checkPathRelativity(dir) {
-    var absolute,
-        normal;
-    absolute = path.resolve(dir);
-    normal = path.normalize(dir);
-    return normal !== absolute;
-}
-
 /* Start a new server and return its id */
 exports.start = function (port, callback){
     var webserver;
@@ -32,6 +24,14 @@ exports.start = function (port, callback){
 
 };
 
+function checkPathRelativity(dir) {
+    var absolute,
+        normal;
+    absolute = path.resolve(dir);
+    normal = path.normalize(dir);
+    return normal !== absolute;
+}
+
 exports.static = function(rootFolder)
 {
     var fixedRoot;
@@ -39,7 +39,6 @@ exports.static = function(rootFolder)
         fixedRoot = rootFolder;
     } else {
         fixedRoot = path.join(__dirname, rootFolder);
-
     }
     return function(http_req, http_res, next){
         console.log("webserver.static");
@@ -68,7 +67,6 @@ exports.static = function(rootFolder)
             }
             else {
                 console.log("webserver.static.send");
-                console.log(data.toString());
 
                 http_res.send(data.toString());
             }
