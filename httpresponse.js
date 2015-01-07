@@ -23,6 +23,7 @@ var HttpResponse = function (con_socket, connection_open){
     this.toString = function (){
         var header,                          // Header instance
             cookie,                          // Cookie instance
+            attribute,
             response_str = settings.HTTP_STR; // The new response string
         response_str += this.http_ver + " ";
         response_str += this.status_code.toString() + " ";
@@ -40,8 +41,13 @@ var HttpResponse = function (con_socket, connection_open){
                 settings.LINE_END;
         }
         for (cookie in this.cookies){
-            response_str += "Set-Cookie: " + cookie + "=" + this.cookies[cookie].toString() +
-            settings.LINE_END;
+            response_str += "Set-Cookie: " + cookie + "=" + this.cookies[cookie].value;
+            for (attribute in this.cookies[cookie].options){
+                response_str += "; " + attribute;
+                response_str += (this.cookies[cookie].options[attribute]) ?
+                        ("=" + this.cookies[cookie].options[attribute]) : "" ;
+            }
+            response_str += settings.LINE_END;
         }
         response_str += settings.LINE_END;
         if (this.message_body){
@@ -84,13 +90,42 @@ var HttpResponse = function (con_socket, connection_open){
     };
 
     this.cookie = function (name, value, options){
-        var cookie_created = new httpcookie.Cookie(value, options);
+        var date_to_expire,
+            cookie_created;
+        if ((name === undefined) || (name === null)) {
+            return;
+        }
+        if ((options === undefined) || (options === null)){
+            options = {}
+        } else {
+            date_to_expire = new Date(settings.DEFAULT_DATE);
+            if ('maxAge' in options){
+                if (parseInt(options['maxAge']) <= 0) {
+                    options['maxAge'] = 0;
+                }
+                date_to_expire = new Date(Date.now() + parseInt(options['maxAge']));
+            }
+            if (!('expires' in options)) {
+                options['expires'] = date_to_expire;
+            }
+            if (!('path' in options)) {
+                options['path'] = "/";
+            }
+            if ('secure' in options){
+                options['secure'] = null;
+            }
+            if ('httpOnly' in options){
+                options['httpOnly'] = null;
+            }
+        }
+        if (typeof value === 'object') {
+            value = JSON.stringify(value);
+        }
+        cookie_created = new httpcookie.Cookie(value, options);
         this.cookies[name] = cookie_created;
     };
 
     this.send = function (body){
-        console.log(this.status_code);
-        console.log(body.toString());
 
         if ((body !== undefined) && (body !== null)){
             if (typeof body === 'object') {

@@ -12,6 +12,7 @@ exports.LINE_END = "\r\n";
 exports.HTTP_STR = "HTTP/";
 exports.HTTP_PROTOCOL = "http";
 exports.HTTP_VERSION_FORMAT = /1\.[0|1]/;
+exports.DEFAULT_DATE = "Thu, 01-Jan-1970 00:00:01 GMT";
 exports.BODY_LENGTH_HEADER = "Content-Length";
 exports.BODY_TYPE_HEADER = "Content-Type";
 exports.METHODS_OPTIONS = ["GET","POST","PUT","DELETE","TRACE","OPTIONS", "CONNECT"];
