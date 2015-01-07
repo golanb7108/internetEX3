@@ -3,7 +3,6 @@
  */
 
 /* All Requires */
-var fs = require('fs');
 var httpresponse = require('./httpresponse');
 var hujiparser = require('./hujiparser');
 var net = require('net');
@@ -11,7 +10,6 @@ var types = require('./mimetypes');
 var util = require('util');
 var event = require('events').EventEmitter;
 var url = require('url');
-var path = require('path');
 
 
 /* Check if the socket has to be closed after http request */
