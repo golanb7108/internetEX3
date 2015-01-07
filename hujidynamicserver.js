@@ -16,9 +16,7 @@ var hujidynamicserver = function ()
         while (index < app.middleware.length){
             if (app.middleware[index].method === "USE" || app.middleware[index].method === req.method ){
                 if (1/* TODO - amit: Check if the path fits*/){
-
-                    /* Build the params of the request */
-
+                    fill_params(req, app.middleware[index].path);
                     app.middleware[index].handler(req, res, function(){
                         app(req, res, index+1);
                     });
@@ -122,6 +120,17 @@ var hujidynamicserver = function ()
 
     return app;
 };
+
+function fill_params(request, curr_use){
+    var request_params = request.path.split('/');
+    var use_params = curr_use.path.split('/');
+    var index;
+    for (index=0; index < request_params.length; index++){
+        if(use_params[index].match(/:/g)){
+            request.params[use_params[index].replace(':','')] = request_params[index];
+        }
+    }
+}
 
 function middleware(method, path, callback){
     this.method = method.toUpperCase();
