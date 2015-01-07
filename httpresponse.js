@@ -89,6 +89,7 @@ var HttpResponse = function (con_socket, connection_open){
     };
 
     this.send = function (body){
+        console.log(this.status_code);
         if ((body !== undefined) && (body !== null)){
             if (typeof body === 'object') {
                 return this.json(body);
