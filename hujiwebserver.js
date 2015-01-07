@@ -7,6 +7,7 @@ var hujidynamicserver = require('./hujidynamicserver'),
     types = require('./mimetypes'),
     hujiparser = require('./hujiparser'),
     fs = require('fs'),
+    url = require('url'),
     path = require('path');
 
 
@@ -27,6 +28,8 @@ exports.start = function (port, callback){
 exports.static = function(rootFolder)
 {
     return function(http_req, http_res, next){
+        console.log("webserver.static");
+
         var file,                                                     // Asked file
             url_pathname,                                    // file's URL pathname
             type;                                                    // file's type

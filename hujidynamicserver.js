@@ -19,7 +19,10 @@ var hujidynamicserver = function ()
         }
         while (index < app.middleware.length){
             if (app.middleware[index].method === "USE" || app.middleware[index].method === req.method ){
+                console.log("first - app.middleware[index].path" + app.middleware[index].path);
+
                 if (does_path_match(req.path, app.middleware[index].path)){
+                    console.log("second - app.middleware[index].path" + app.middleware[index].path);
                     fill_params(req, app.middleware[index].path);
                     app.middleware[index].handler(req, res, function(){
                         app(req, res, index+1);
@@ -141,9 +144,9 @@ function fill_params(request, curr_use){
     console.log("app.fill_params");
 
     var request_params = request.path.split('/');
-    var use_params = curr_use.path.split('/');
+    var use_params = curr_use.split('/');
     var index;
-    for (index=0; index < request_params.length; index++){
+    for (index=0; index < use_params.length; index++){
         if(use_params[index].match(/:/g)){
             request.params[use_params[index].replace(':','')] = request_params[index];
         }

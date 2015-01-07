@@ -51,6 +51,7 @@ var hujinet = function (handler){
                     var resp = new httpresponse.HttpResponse(socket, check_close(req_list[i]));
                     resp.set('Connection', req_list[i].request_fields["Connection"]);
                     resp.http_ver = req_list[i].http_ver;
+                    console.log("emit");
                     myhujinet.emit('request', req_list[i], resp);
                 }
             }
@@ -69,6 +70,7 @@ var hujinet = function (handler){
     myhujinet.server.on('error', console.log);
 
     myhujinet.on('request', function(req, res) {
+        console.log("on request");
         handler(req, res);
     });
 
