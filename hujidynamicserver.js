@@ -27,7 +27,7 @@ var hujidynamicserver = function ()
             index += 1;
         }
     };
-    hujinet(app); //create a new huji net server
+    var server = hujinet(app); //create a new huji net server
     // Defining local vars
     app.route = {};        // Holds all of the middleware functions by method
     app.middleware = [];    // Holds all of the middleware functions
@@ -116,6 +116,12 @@ var hujidynamicserver = function ()
             app.route['put'] = [];
         app.route['put'].push(middle);
     };
+    app.listen = function(port){
+        server.listen(port);
+    };
+
+
+    return app;
 };
 
 function middleware(method, path, callback){
