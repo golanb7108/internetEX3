@@ -25,7 +25,7 @@ var HttpResponse = function (con_socket, connection_open){
             cookie,                          // Cookie instance
             response_str = settings.HTTP_STR; // The new response string
         response_str += this.http_ver + " ";
-        response_str += this.status_code + " ";
+        response_str += this.status_code.toString() + " ";
         response_str += this.reason_phrase + settings.LINE_END;
         for (header in this.general_headers){
             response_str += header + ": " + this.general_headers[header] +

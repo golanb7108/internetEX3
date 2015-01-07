@@ -35,7 +35,7 @@ var HttpRequest = function (){
         if (field in this.request_fields){
             return this.request_fields[field];
         }
-        throw settings.invalid_value_error;
+        return null;
     };
     this.is = function (type){
         var req_type = this.get(settings.BODY_TYPE_HEADER);

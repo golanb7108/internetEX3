@@ -6,6 +6,7 @@
 var httprequest = require('./httprequest');
 var settings = require('settings');
 var url = require('url');
+var types = require('./mimetypes');
 
 var not_finished_req; //Contains a string of the last request which its body message
                       // didn't arrive in the last stream
@@ -139,7 +140,27 @@ function parse_request(req_lines){
             parseInt(http_req.request_fields[settings.BODY_LENGTH_HEADER]))){
         throw settings.not_finished_request_error;
     }
+    body_parser(http_req);
     return http_req;
+}
+
+function body_parser(request){
+    var body_type = request.get(settings.BODY_TYPE_HEADER);
+    var param_pairs;
+    var param;
+    if (body_type){
+        if (body_type === types.get_type('.json')){
+            request.body_params = JSON.parse(request.body);
+        } else if ((body_type === types.get_type('.http_post1')) ||
+                (body_type === types.get_type('.http_post2'))){
+            param_pairs = request.body.split('&');
+            for (param in param_pairs){
+                if (trim(param).match(/=/g)){
+                    request.body_params[trim(param.split('=')[0])] = trim(param.split('=')[1]);
+                }
+            }
+        }
+    }
 }
 
 exports.parse = parse;
