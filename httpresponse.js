@@ -90,6 +90,8 @@ var HttpResponse = function (con_socket, connection_open){
 
     this.send = function (body){
         console.log(this.status_code);
+        console.log(body.toString());
+
         if ((body !== undefined) && (body !== null)){
             if (typeof body === 'object') {
                 return this.json(body);
@@ -104,7 +106,7 @@ var HttpResponse = function (con_socket, connection_open){
             }
             this.message_body = (typeof body === 'number') ? body.toString() : body;
             if (this.entity_headers[settings.BODY_LENGTH_HEADER] === undefined) {
-                var len = (this.body) ? this.body.length : 0;
+                var len = (this.message_body) ? this.message_body.length : 0;
                 this.set(settings.BODY_LENGTH_HEADER, len);
             }
         }

@@ -70,7 +70,7 @@ exports.static = function(rootFolder)
                 console.log("webserver.static.send");
                 console.log(data.toString());
 
-                http_res.send(data);
+                http_res.send(data.toString());
             }
         });
     }
