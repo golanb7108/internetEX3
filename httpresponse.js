@@ -8,11 +8,12 @@ var types = require('./mimetypes');
 
 
 /* HttpResponse constructor */
-var HttpResponse = function (){
-    this.socket = null;
+var HttpResponse = function (con_socket, connection_open){
+    this.keep_alive = connection_open;
+    this.socket = con_socket;
     this.http_ver = null;
-    this.status_code = null;
-    this.reason_phrase = null;
+    this.status_code = 200; // default value
+    this.reason_phrase = settings.STATUS_PHRASES(200);
     this.cookies = {};
     this.general_headers = {};
     this.response_headers = {};
@@ -39,7 +40,7 @@ var HttpResponse = function (){
                 settings.LINE_END;
         }
         for (cookie in this.cookies){
-            response_str += "Set-Cookie: " + cookie + "=" + this.cookies[cookie].toString();
+            response_str += "Set-Cookie: " + cookie + "=" + this.cookies[cookie].toString() +
             settings.LINE_END;
         }
         response_str += settings.LINE_END;
@@ -67,6 +68,7 @@ var HttpResponse = function (){
 
     this.status = function (code){
         this.status_code = code;
+        this.reason_phrase = settings.STATUS_PHRASES[code];
     };
 
     this.get = function (field){
@@ -106,7 +108,9 @@ var HttpResponse = function (){
             }
         }
         this.socket.write(this.toString(), 'binary');
-        //todo: check for close socket
+        if (!this.keep_alive){
+            this.socket.end();
+        }
     };
 
     this.json = function (body){
@@ -131,3 +135,4 @@ HttpResponse.prototype.print = function (){
 };
 
 exports.HttpResponse = HttpResponse;
+

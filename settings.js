@@ -14,5 +14,7 @@ exports.HTTP_PROTOCOL = "http";
 exports.HTTP_VERSION_FORMAT = /1\.[0|1]/;
 exports.BODY_LENGTH_HEADER = "Content-Length";
 exports.BODY_TYPE_HEADER = "Content-Type";
-exports.METHODS_OPTIONS = ["GET","POST","PUT","DELETE","TRACE","OPTIONS",
-    "CONNECT"];
+exports.METHODS_OPTIONS = ["GET","POST","PUT","DELETE","TRACE","OPTIONS", "CONNECT"];
+exports.STATUS_PHRASES = {200: "OK",
+                          500: "Parsing error",
+                          404: "Not found"};

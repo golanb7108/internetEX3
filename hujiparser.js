@@ -142,31 +142,5 @@ function parse_request(req_lines){
     return http_req;
 }
 
-/* Create new response string from given response object */
-function stringify(res_object){
-    var header,                          // Header instance
-        response_str = settings.HTTP_STR; // The new response string
-    response_str += res_object.http_ver + " ";
-    response_str += res_object.status_code + " ";
-    response_str += res_object.reason_phrase + settings.LINE_END;
-    for (header in res_object.general_headers){
-        response_str += header + ": " + res_object.general_headers[header] +
-                settings.LINE_END;
-    }
-    for (header in res_object.response_headers){
-        response_str += header + ": " + res_object.response_headers[header] +
-                settings.LINE_END;
-    }
-    for (header in res_object.entity_headers){
-        response_str += header + ": " + res_object.entity_headers[header] +
-                settings.LINE_END;
-    }
-    response_str += settings.LINE_END;
-    if (res_object.message_body){
-        response_str += res_object.message_body +settings. LINE_END;
-    }
-    return response_str;
-}
-
 exports.parse = parse;
-exports.stringify = stringify;
+
