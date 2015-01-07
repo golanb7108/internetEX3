@@ -5,7 +5,7 @@
 var path = require ('path');
 var fs =  require('fs');
 var net =  require('net');
-var hujinet = require('hujinet');
+var hujinet = require('./hujinet');
 
 var hujidynamicserver = function ()
 {

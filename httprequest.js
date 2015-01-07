@@ -2,7 +2,7 @@
  * Created by Amit Abel and Golan Ben Ami
  */
 
-var settings = require('settings');
+var settings = require('./settings');
 
 /* HttpRequest constructor */
 var HttpRequest = function (){

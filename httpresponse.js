@@ -2,8 +2,8 @@
  * Created by Amit Abel and Golan Ben Ami
  */
 
-var settings = require('settings');
-var httpcookie = require('httpcookie');
+var settings = require('./settings');
+var httpcookie = require('./httpcookie');
 var types = require('./mimetypes');
 
 

@@ -4,7 +4,7 @@
 
 /* All requires */
 var httprequest = require('./httprequest');
-var settings = require('settings');
+var settings = require('./settings');
 var url = require('url');
 var types = require('./mimetypes');
 
