@@ -15,7 +15,7 @@ var path = require('path');
 
 
 /* Create new server on port */
-var hujinet = function (handler, port, callback){
+var hujinet = function (handler){
     var myhujinet = this;
 
     myhujinet.server = net.createServer(function (socket){ //'connection' listener
