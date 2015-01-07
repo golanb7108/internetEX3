@@ -11,9 +11,17 @@ var hujidynamicserver = require('./hujidynamicserver'),
 
 
 /* Start a new server and return its id */
-exports.start = function (port, rootFolder, callback){
-    var webserver = new hujidynamicserver();
-    webserver.listen(port);
+exports.start = function (port, callback){
+    var webserver;
+    try {
+        webserver = new hujidynamicserver();
+        webserver.listen(port);
+    }
+    catch (e){
+        callback(e, webserver);
+    }
+    callback(null, webserver);
+
 };
 
 exports.static = function(rootFolder)
@@ -37,6 +45,7 @@ exports.static = function(rootFolder)
                 http_res.message_body = "The requested URL " + file +
                 " was not found on this server";
                 http_res.send();
+                next();
             }
             else {
                 http_res.send(data);
