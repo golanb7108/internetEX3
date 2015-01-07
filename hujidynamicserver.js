@@ -5,10 +5,10 @@
 var path = require ('path');
 var fs =  require('fs');
 var net =  require('net');
+var hujinet = require('hujinet');
 
-var hujidynamicserver = function ()
+var hujidynamicserver = function (port)
 {
-
     var app = function(req, res, index){
         if (typeof index === 'undefined'){
             index = 0;
@@ -27,7 +27,8 @@ var hujidynamicserver = function ()
             index += 1;
         }
     };
-    // Defining the vars
+    hujinet(app, port, null); //create a new huji net server
+    // Defining local vars
     app.route = {};        // Holds all of the middleware functions by method
     app.middleware = [];    // Holds all of the middleware functions
 

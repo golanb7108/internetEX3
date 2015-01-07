@@ -3,30 +3,20 @@
  */
 
 /* All requires */
-var hujinet = require('./hujinet');
 var hujidynamicserver = require('./hujidynamicserver');
 
-var hujiwebserver = function(){
-    return hujidynamicserver;
-};
-
-/* Servers list */
-var http_servers = [];
-var server_id = 0;
 
 /* Start a new server and return its id */
-hujiwebserver.start = function (port, rootFolder, callback){
-    http_servers[server_id] = hujinet.getServer(port, rootFolder, callback);
-    http_servers[server_id].on('error', callback);
-    return server_id++;
+exports.start = function (port, rootFolder, callback){
+    new hujidynamicserver(port);
 };
 
-hujiwebserver.static = function(rootFolder)
+exports.static = function(rootFolder)
 {
 
 };
 
-hujiwebserver.myUse = function()
+exports.myUse = function()
 {
 
 };
