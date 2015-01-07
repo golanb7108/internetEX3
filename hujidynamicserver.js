@@ -9,7 +9,11 @@ var hujinet = require('./hujinet');
 
 var hujidynamicserver = function ()
 {
+    console.log("hujidynamicserver.ctor");
+
     var app = function(req, res, index){
+        console.log("app.ctor");
+
         if (typeof index === 'undefined'){
             index = 0;
         }
@@ -26,6 +30,8 @@ var hujidynamicserver = function ()
         }
     };
     var server = new hujinet(app); //create a new huji net server
+    console.log("app.vars");
+
     // Defining local vars
     app.route = {};        // Holds all of the middleware functions by method
     app.middleware = [];    // Holds all of the middleware functions
@@ -35,6 +41,8 @@ var hujidynamicserver = function ()
 
     };
     app.use = function(resource, requestHandler){
+        console.log("app.use");
+
         var middle;              // the middleware that would be defined
         if (typeof requestHandler === 'undefined') {
             middle = new middleware('use', '/', resource);
@@ -51,6 +59,8 @@ var hujidynamicserver = function ()
         app.route['use'].push(middle);
     };
     app.get = function(resource, requestHandler){
+        console.log("app.get");
+
         var middle;              // the middleware that would be defined
         if (typeof requestHandler === 'undefined') {
             middle = new middleware('get', '/', resource);
@@ -67,6 +77,8 @@ var hujidynamicserver = function ()
         app.route['get'].push(middle);
     };
     app.post = function(resource, requestHandler){
+        console.log("app.post");
+
         var middle;              // the middleware that would be defined
         if (typeof requestHandler === 'undefined') {
             middle = new middleware('post', '/', resource);
@@ -83,6 +95,8 @@ var hujidynamicserver = function ()
         app.route['post'].push(middle);
     };
     app.delete = function(resource, requestHandler){
+        console.log("app.delete");
+
         var middle;              // the middleware that would be defined
         if (typeof requestHandler === 'undefined') {
             middle = new middleware('delete', '/', resource);
@@ -99,6 +113,8 @@ var hujidynamicserver = function ()
         app.route['delete'].push(middle);
     };
     app.put = function(resource, requestHandler){
+        console.log("app.put");
+
         var middle;              // the middleware that would be defined
         if (typeof requestHandler === 'undefined') {
             middle = new middleware('put', '/', resource);
@@ -122,6 +138,8 @@ var hujidynamicserver = function ()
 };
 
 function fill_params(request, curr_use){
+    console.log("app.fill_params");
+
     var request_params = request.path.split('/');
     var use_params = curr_use.path.split('/');
     var index;
@@ -133,6 +151,8 @@ function fill_params(request, curr_use){
 }
 
 function middleware(method, path, callback){
+    console.log("app.middleware");
+
     this.method = method.toUpperCase();
     this.path = path;
     this.handler = callback;
@@ -142,8 +162,15 @@ function middleware(method, path, callback){
 
 
 function does_path_match(req_path, middleware_path){
+    console.log("app.does_path_match");
+    console.log("req_path: " + req_path);
+    console.log("middleware_path: " + middleware_path);
+
+
     if(middleware_path.indexOf(':') === -1){
         var regex = new RegExp('^' + middleware_path, 'i');
+
+        console.log("HI " + regex.test(req_path) + "HI");
         return regex.test(req_path);
     }
     else {
