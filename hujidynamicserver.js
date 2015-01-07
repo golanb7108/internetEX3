@@ -9,27 +9,118 @@ var net =  require('net');
 var hujidynamicserver = function ()
 {
 
-    var dynamic = function(){
+    var app = function(req, res, index){
+        if (typeof index === 'undefined'){
+            index = 0;
+        }
+        while (index < app.middleware.length){
+            if (app.middleware[index].method === "USE" || app.middleware[index].method === req.method ){
+                if (1/* TODO - amit: Check if the path fits*/){
+
+                    /* Build the params of the request */
+
+                    app.middleware[index].handler(req, res, function(){
+                        app(req, res, index+1);
+                    });
+                }
+            }
+            index += 1;
+        }
+    };
+    // Defining the vars
+    app.route = {};        // Holds all of the middleware functions by method
+    app.middleware = [];    // Holds all of the middleware functions
+
+
+    app.stop = function(){
 
     };
-    dynamic.stop = function(){
+    app.use = function(resource, requestHandler){
+        var middle;              // the middleware that would be defined
+        if (typeof requestHandler === 'undefined') {
+            middle = new middleware('use', '/', resource);
+        }
+        else{
+            middle = new middleware('use', resource, requestHandler);
+        }
+        //push to the middle ware list.
+        app.middleware.push(middle);
 
+        //push to the list by method
+        if(app.route['use'] === undefined)
+                app.route['use'] = [];
+        app.route['use'].push(middle);
     };
-    dynamic.use = function(resource, requestHandler){
+    app.get = function(resource, requestHandler){
+        var middle;              // the middleware that would be defined
+        if (typeof requestHandler === 'undefined') {
+            middle = new middleware('get', '/', resource);
+        }
+        else{
+            middle = new middleware('get', resource, requestHandler);
+        }
+        //push to the middle ware list.
+        app.middleware.push(middle);
 
+        //push to the list by method
+        if(app.route['get'] === undefined)
+            app.route['get'] = [];
+        app.route['get'].push(middle);
     };
-    dynamic.get = function(resource, requestHandler){
+    app.post = function(resource, requestHandler){
+        var middle;              // the middleware that would be defined
+        if (typeof requestHandler === 'undefined') {
+            middle = new middleware('post', '/', resource);
+        }
+        else{
+            middle = new middleware('post', resource, requestHandler);
+        }
+        //push to the middle ware list.
+        app.middleware.push(middle);
 
+        //push to the list by method
+        if(app.route['post'] === undefined)
+            app.route['post'] = [];
+        app.route['post'].push(middle);
     };
-    dynamic.post = function(resource, requestHandler){
+    app.delete = function(resource, requestHandler){
+        var middle;              // the middleware that would be defined
+        if (typeof requestHandler === 'undefined') {
+            middle = new middleware('delete', '/', resource);
+        }
+        else{
+            middle = new middleware('delete', resource, requestHandler);
+        }
+        //push to the middle ware list.
+        app.middleware.push(middle);
 
+        //push to the list by method
+        if(app.route['delete'] === undefined)
+            app.route['delete'] = [];
+        app.route['delete'].push(middle);
     };
-    dynamic.delete = function(resource, requestHandler){
+    app.put = function(resource, requestHandler){
+        var middle;              // the middleware that would be defined
+        if (typeof requestHandler === 'undefined') {
+            middle = new middleware('put', '/', resource);
+        }
+        else{
+            middle = new middleware('put', resource, requestHandler);
+        }
+        //push to the middle ware list.
+        app.middleware.push(middle);
 
+        //push to the list by method
+        if(app.route['put'] === undefined)
+            app.route['put'] = [];
+        app.route['put'].push(middle);
     };
-    dynamic.put = function(resource, requestHandler){
+};
 
-    };
+function middleware(method, path, callback){
+    this.method = method.toUpperCase();
+    this.path = path;
+    this.handler = callback;
 };
 module.exports = hujidynamicserver;
 

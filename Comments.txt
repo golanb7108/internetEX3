@@ -1,11 +1,23 @@
 
-    TODO - Deal with parsing exceptions - deal with the slashes, for exception, make method "null" - Amit
-
-    TODO - Write the test for this ex
-    TODO - Fix the code according to the guidelines + comments + README + Partner.
-
-    TODO - Make sure that if one packet goes bad it won't crash the whole system (exceptions)
-    TODO - Keep alive issue
+Golan:
+    TODO - all : fix the sync between dynamic, web, and net.
+    TODO - web server : write the static function. (static returns a function that does get)
+    TODO - net : suit the net to EX4.
+    TODO - all : the listen functions.
 
 
-    TODO - DONE!!! [ for a parsing exception - return 500 - Golan ] !!!DONE
+Amit:
+    TODO - response : terminate socket.
+    TODO - response, request : handle cookies.
+    TODO - parser : parse the body.
+    TODO - dynamic server : add the checking of the path url to the resource.
+    TODO - dynamic server : update the request params. (as in tanya's ex)
+
+Other
+    TODO - web server : the my use function
+    TODO - test: write the test.
+    TODO - all : exceptions.
+    TODO - all : security instructions.
+
+
+
