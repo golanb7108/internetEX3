@@ -38,7 +38,7 @@ exports.static = function(rootFolder)
         type = url_pathname.substr(url_pathname.lastIndexOf("."));
         http_res.entity_headers["Content-Type"] = types.get_type(type);
         file = rootFolder + path.normalize(url_pathname);
-        console.log(file);
+        console.log("file name for static: " + file);
         fs.readFile(file, function (err, data) {
             if (err) {
                 http_res.status_code = "404";

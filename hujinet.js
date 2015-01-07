@@ -45,6 +45,7 @@ var hujinet = function (handler){
             var req_list = hujiparser.parse(data.toString()); // List of requests
             for (var i = 0; i < req_list.length ; i++){
                 if (!req_list[i].method){
+                    console.log("send_error");
                     send_error(socket, req_list[i]);
                 }
                 else{

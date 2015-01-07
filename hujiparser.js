@@ -98,9 +98,9 @@ function parse_request(req_lines){
     }
     http_req.url = req_header_tmp.substring(0,
                 req_header_tmp.indexOf(settings.HTTP_STR)-1);
-    http_req.path = url.parse(this.url).pathname;
-    http_req.query = url.parse(this.url).query;
-    http_req.host = url.parse(this.url).hostname;
+    http_req.path = url.parse(http_req.url).pathname;
+    http_req.query = url.parse(http_req.url).query;
+    http_req.host = url.parse(http_req.url).hostname;
     req_header_tmp = req_header_tmp.split(settings.HTTP_STR)[1];
     if (!trim(req_header_tmp).match(settings.HTTP_VERSION_FORMAT)){
         throw settings.bad_request_format_error;

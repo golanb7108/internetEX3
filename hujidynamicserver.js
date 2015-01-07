@@ -20,9 +20,10 @@ var hujidynamicserver = function ()
         while (index < app.middleware.length){
             if (app.middleware[index].method === "USE" || app.middleware[index].method === req.method ){
                 console.log("first - app.middleware[index].path" + app.middleware[index].path);
-
-                if (does_path_match(req.path, app.middleware[index].path)){
+                var match = does_path_match(req.path, app.middleware[index].path);
+                if (match){
                     console.log("second - app.middleware[index].path" + app.middleware[index].path);
+
                     fill_params(req, app.middleware[index].path);
                     app.middleware[index].handler(req, res, function(){
                         app(req, res, index+1);
