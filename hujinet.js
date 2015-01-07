@@ -14,6 +14,29 @@ var url = require('url');
 var path = require('path');
 
 
+/* Check if the socket has to be closed after http request */
+function check_close(http_req){
+    if (http_req.request_fields["Connection"] &&
+        http_req.request_fields["Connection"].toLowerCase() === "close"){
+        return true;
+    }
+    if ((http_req.http_ver === '1.0') &&
+        (http_req.request_fields["Connection"] &&
+        http_req.request_fields["Connection"].toLowerCase() !==
+        "keep-alive")){
+        return true;
+    }
+    return false;
+}
+
+function send_error(socket, req){
+    var resp = new httpresponse(socket, false);
+    resp.set('Connection', req.request_fields["Connection"]);
+    resp.http_ver = req.http_ver;
+    resp.status(500);
+    resp.send();
+}
+
 /* Create new server on port */
 var hujinet = function (handler){
     var myhujinet = this;
@@ -21,9 +44,18 @@ var hujinet = function (handler){
     myhujinet.server = net.createServer(function (socket){ //'connection' listener
         socket.setTimeout(2000);
         socket.on('data', function (data){
-
-
-
+            var req_list = hujiparser.parse(data.toString()); // List of requests
+            for (var i = 0; i < req_list.length ; i++){
+                if (!req_list[i].method){
+                    send_error(socket, req_list[i]);
+                }
+                else{
+                    var resp = new httpresponse(socket, check_close(req_list[i]));
+                    resp.set('Connection', req_list[i].request_fields["Connection"]);
+                    resp.http_ver = req_list[i].http_ver;
+                    myhujinet.emit('request', req_list[i], resp);
+                }
+            }
         });
 
 
