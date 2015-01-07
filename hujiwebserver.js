@@ -8,7 +8,8 @@ var hujidynamicserver = require('./hujidynamicserver');
 
 /* Start a new server and return its id */
 exports.start = function (port, rootFolder, callback){
-    new hujidynamicserver().listen(port);
+    var webserver = new hujidynamicserver();
+    webserver.listen(port);
 };
 
 exports.static = function(rootFolder)
