@@ -28,7 +28,7 @@ function check_close(http_req){
 }
 
 function send_error(socket, req){
-    var resp = new httpresponse(socket, false);
+    var resp = new httpresponse.HttpResponse(socket, false);
     resp.set('Connection', req.request_fields["Connection"]);
     resp.http_ver = req.http_ver;
     resp.status(500);
@@ -48,7 +48,7 @@ var hujinet = function (handler){
                     send_error(socket, req_list[i]);
                 }
                 else{
-                    var resp = new httpresponse(socket, check_close(req_list[i]));
+                    var resp = new httpresponse.HttpResponse(socket, check_close(req_list[i]));
                     resp.set('Connection', req_list[i].request_fields["Connection"]);
                     resp.http_ver = req_list[i].http_ver;
                     myhujinet.emit('request', req_list[i], resp);
