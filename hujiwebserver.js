@@ -27,8 +27,8 @@ exports.static = function(rootFolder)
         type = url_pathname.substr(url_pathname.lastIndexOf("."));
         http_res.entity_headers["Content-Type"] = types.get_type(type);
         file = rootFolder + path.normalize(url_pathname);
-
-        fs.readFile('/etc/passwd', function (err, data) {
+        console.log(file);
+        fs.readFile(file, function (err, data) {
             if (err) {
                 http_res.status_code = "404";
                 http_res.reason_phrase = "Not found";
