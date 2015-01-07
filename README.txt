@@ -1,9 +1,10 @@
-Internet technologies EX3
+Internet technologies EX4
 =========================
+
 -------------------------------------------------------------------------------
 (1) What was hard in this ex?
 -------------------------------------------------------------------------------
-A couple of issues?
+A couple of issues:
 a. Understanding the asynchronous mechanism in which javascript works -
    It took time to understand the way the code executes - it is not linear,
    and it is difficult to control the program flows.
@@ -16,33 +17,34 @@ c. Using Javascript -
    language ability.
 d. The http protocol -
    Learning the http protocol was one of our biggest challenges.
+e. Understanding the EX -
+   It took time to understand our position in this ex, what exactly is our task.
+f. Learning the Express API -
+   The express API is new to us, and it took time leaning exactly what each function
+   and part is responsible of.
+g. Learning what is the middleware -
+   The middleware concept is new to us, as a layer connecting the server and response / request.
+h. Working with a big amount of modules -
+   We handled a large amount of modules in this ex that demanded a large amount of
+   encapsulation.
 
 -------------------------------------------------------------------------------
 (2) What was fun in this ex?(We wont reduce points in case this part is empty)
 -------------------------------------------------------------------------------
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-Kidding, we actually kind of enjoyed developing this light-weight http server.
-First, it was really cool to learn how to create and control
-such a useful ability. It is of course really practical and now we have
-a basic knowledge of how to build our own website!!
-Second, .. well, no, that's all :/
+Actually this ex was less fun.
+Still, if we need to point out one bean of light in this situation, it was learning
+to work with the express API.
 
 
--------------------------------------------------------------------------------
-(3) What did you do in order to make your server efficient?
--------------------------------------------------------------------------------
-a. Maintain the "keep-alive" definitions in order to create the minimal
-number of sockets needed.
-b. Use the short timeout in order to kill the socket when it is no more
-needed.
-c. The parser takes charge of all of the dealing with the request string,
-and this modelling enables each of the modules do only what it need to do.
+------------------------------------------------------------------
+(3)If you were a hacker and you could add a dynamic function
+   that answers the URL /hello/hacker, write 2 different ‘bad’
+   dynamic functions that will cause DOS.
+   How would you make sure that those functions will get executed?
+------------------------------------------------------------------
+1. Mess with the response message / file.
+2. Won't use the next function and won't send the data.
+================
+   How would you make sure that those functions will get executed?
+================
+Put '/' in the as the resource argument.
