@@ -15,10 +15,15 @@ hujiserver.start(port, function (e, server){
     if (typeof server !== 'undefined'){
         console.log("test.start");
         server.use('/EX2', hujiserver.static('/www'));
-        server.use('/*/:x', function(req, res, next){
+        server.use('/www/:x', function(req, res, next){
             if (req.params['x'] === 'EX2'){
                 console.log("Test check_params succeed");
             }
+            next();
+        });
+        server.use('/', function(req, res, next){
+            console.log("Next test succeed");
+            next();
         });
     }
 });
