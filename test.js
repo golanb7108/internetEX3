@@ -19,7 +19,6 @@ hujiserver.start(port, function (e, server){
             if (req.params['x'] === 'EX2'){
                 console.log("Test check_params succeed");
             }
-            //res.send("The params are: " + req.params['x']);
         });
     }
 });
@@ -38,7 +37,7 @@ function getOptions(host, port, path, connection) {
 }
 
 function expect_success_test(){
-    http.get(getOptions('localhost', '8124','/EX2/index.html','close'), function (resp){
+    http.get(getOptions('localhost', '8124','/EX2/index.html','keep-alive'), function (resp){
             resp.on('data', function (data){
                 if (resp.statusCode === 200){
                     console.log('expect_success_test success :)');
@@ -59,6 +58,15 @@ function check_params(){
             console.log('check_params failed on: ' + error);
         });
     });
+
+    var con; // Connection
+    con = net.createConnection(port);
+    con.setNoDelay();
+    con.on('data', function (data){
+    });
+
+    con.write('GET /www/EX2/index.html HTTP/1.1\r\nHost: localhost\r\nConnection: ' +
+    'close\r\n');
 }
 
 
