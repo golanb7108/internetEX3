@@ -57,6 +57,22 @@ function expect_success_test(){
     }).on('error', console.log);
 }
 
+function expect_404_test(){
+    http.get(getOptions('localhost', '8124','/EX2/kishkush.html','close'),
+        function(resp){
+            resp.on('data', function (data){
+                if (resp.statusCode === 404){
+                    console.log('expect_404_test success :)');
+                } else {
+                    console.log('expect_404_test failed on: ' + resp.statusCode);
+                }
+            });
+            resp.on('error',function (error){
+                console.log('expect_404_test failed on: ' + error);
+            });
+        }).on('error', console.log);
+}
+
 function check_params(){
     http.get(getOptions('localhost', '8124','/www/EX2/index.html','close'), function (resp){
         resp.on('error',function (error){
@@ -68,3 +84,4 @@ function check_params(){
 
 expect_success_test();
 check_params();
+expect_404_test();
