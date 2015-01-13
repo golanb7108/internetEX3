@@ -2,6 +2,7 @@
  * Created by Amit Abel and Golan Ben Ami
  */
 
+/* All Requires */
 var settings = require('./settings');
 
 /* HttpRequest constructor */
@@ -18,6 +19,8 @@ var HttpRequest = function (){
     this.host = null;
     this.body = null;
     this.body_params = {};
+
+    // Return the value of param name when present.
     this.param = function (name, defaultValue){
         if (name in this.params){
             return this.params[name];
@@ -31,15 +34,21 @@ var HttpRequest = function (){
             throw settings.invalid_value_error;
         }
     };
+
+    // Get the case-insensitive request header field.
+    // The Referrer and Referer fields are interchangeable.
     this.get = function (field){
         if (field in this.request_fields){
             return this.request_fields[field];
         }
         return null;
     };
+
+    // Check if the incoming request contains the "Content-Type" header field,
+    // and if it matches the give mime type.
     this.is = function (type){
-        var req_type = this.get(settings.BODY_TYPE_HEADER);
-        var patt = new RegExp(type);
+        var req_type = this.get(settings.BODY_TYPE_HEADER), // The request body's type
+            patt = new RegExp(type);                        // Pattern for type
         return patt.test(req_type);
     };
 };

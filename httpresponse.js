@@ -2,6 +2,7 @@
  * Created by Amit Abel and Golan Ben Ami
  */
 
+/* All Requires */
 var settings = require('./settings');
 var httpcookie = require('./httpcookie');
 var types = require('./mimetypes');
@@ -9,8 +10,8 @@ var types = require('./mimetypes');
 
 /* HttpResponse constructor */
 var HttpResponse = function (con_socket, connection_open){
-    this.keep_alive = connection_open;
-    this.socket = con_socket;
+    this.keep_alive = connection_open; // Is the response's socket should be kept open
+    this.socket = con_socket;          // The response's socket
     this.http_ver = null;
     this.status_code = 200; // default value
     this.reason_phrase = settings.STATUS_PHRASES[200]; // default value
@@ -20,10 +21,11 @@ var HttpResponse = function (con_socket, connection_open){
     this.entity_headers = {};
     this.message_body = null;
 
+    // Return a string phrase of the response.
     this.toString = function (){
-        var header,                          // Header instance
-            cookie,                          // Cookie instance
-            attribute,
+        var header,                           // Header instance
+            cookie,                           // Cookie instance
+            attribute,                        // A single attribute in a cookie's option
             response_str = settings.HTTP_STR; // The new response string
         response_str += this.http_ver + " ";
         response_str += this.status_code.toString() + " ";
@@ -56,7 +58,9 @@ var HttpResponse = function (con_socket, connection_open){
         return response_str;
     };
 
+    // Set header field to value, or pass an object to set multiple fields at once.
     this.set  = function (field, value){
+        var param; // a parameter in field
         if (typeof field === "object"){
             for (param in field){
                 this.set(param, field[param]);
@@ -68,15 +72,23 @@ var HttpResponse = function (con_socket, connection_open){
         } else if (field in this.entity_headers){
             this.entity_headers[field] = value;
         } else {
+            // Default area for params
             this.general_headers[field] = value;
         }
     };
 
+    // Chainable alias of node's res.statusCode.
+    // Use this method to set the HTTP status for the response.
     this.status = function (code){
         this.status_code = code;
-        this.reason_phrase = settings.STATUS_PHRASES[code];
+        if (!(code in settings.STATUS_PHRASES)){
+            this.reason_phrase = settings.STATUS_PHRASES[500];
+        } else {
+            this.reason_phrase = settings.STATUS_PHRASES[code];
+        }
     };
 
+    // Get the case-insensitive response header field.
     this.get = function (field){
         if (field in this.general_headers){
             return this.general_headers[field];
@@ -85,13 +97,16 @@ var HttpResponse = function (con_socket, connection_open){
         } else if (field in this.entity_headers){
             return this.entity_headers[field];
         } else {
+            // In case the field doesn't exist in response
             throw settings.invalid_value_error;
         }
     };
 
+    // Set cookie name to value, which may be a string or object converted to JSON.
+    // The options object can have the following properties.
     this.cookie = function (name, value, options){
-        var date_to_expire,
-            cookie_created;
+        var date_to_expire, // The day in which the cookie expire.
+            cookie_created; // The new cookie object
         if ((name === undefined) || (name === null)) {
             return;
         }
@@ -124,32 +139,40 @@ var HttpResponse = function (con_socket, connection_open){
         this.cookies[name] = cookie_created;
     };
 
+    // Send a response.
     this.send = function (body){
-
         if ((body !== undefined) && (body !== null)){
             if (typeof body === 'object') {
                 return this.json(body);
             } else if (typeof body === 'buffer') {
-                if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined) {
+                if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined){
                     this.set(settings.BODY_TYPE_HEADER, types.get_type('.bin'));
                 }
             } else {
-                if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined) {
+                if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined){
                     this.set(settings.BODY_TYPE_HEADER, types.get_type('.html'));
                 }
             }
             this.message_body = (typeof body === 'number') ? body.toString() : body;
-            if (this.entity_headers[settings.BODY_LENGTH_HEADER] === undefined) {
+            if (this.entity_headers[settings.BODY_LENGTH_HEADER] === undefined){
                 var len = (this.message_body) ? this.message_body.length : 0;
                 this.set(settings.BODY_LENGTH_HEADER, len);
             }
         }
         this.socket.write(this.toString(), 'binary');
-        if (!this.keep_alive){
-            this.socket.end();
-        }
+
+        // Close the socket after sending if it was requested
+        this.socket.on('drain', function (){
+            if (!this.keep_alive){
+                this.socket.end();
+            }
+        });
     };
 
+    // Send a JSON response.
+    // This method is identical to res.send() when an object or array is passed.
+    // However, it may be used for explicit JSON conversion of non-objects,
+    // such as null, undefined, etc. (although these are technically not valid JSON).
     this.json = function (body){
         if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined) {
             this.set(settings.BODY_TYPE_HEADER, types.get_type('.json'));

@@ -28,7 +28,7 @@ function check_close(http_req){
 }
 
 function send_error(socket, req){
-    var resp = new httpresponse.HttpResponse(socket, false);
+    var resp = new httpresponse.HttpResponse(socket, false); // The error response
     resp.set('Connection', req.request_fields["Connection"]);
     resp.http_ver = req.http_ver;
     resp.status(500);
@@ -37,27 +37,25 @@ function send_error(socket, req){
 
 /* Create new server on port */
 var hujinet = function (handler){
-    var myhujinet = this;
-
+    var myhujinet = this; // husinet server
     myhujinet.server = net.createServer(function (socket){ //'connection' listener
         socket.setTimeout(2000);
         socket.on('data', function (data){
-            var req_list = hujiparser.parse(data.toString()); // List of requests
-            for (var i = 0; i < req_list.length ; i++){
+            var i,                                            // Index in the list
+                req_list = hujiparser.parse(data.toString()), // List of requests
+                resp;                                         // The new response
+            for (i = 0; i < req_list.length ; i++){
                 if (!req_list[i].method){
-                    console.log("send_error");
                     send_error(socket, req_list[i]);
                 }
                 else{
-                    var resp = new httpresponse.HttpResponse(socket, check_close(req_list[i]));
+                    resp = new httpresponse.HttpResponse(socket, check_close(req_list[i]));
                     resp.set('Connection', req_list[i].request_fields["Connection"]);
                     resp.http_ver = req_list[i].http_ver;
-                    console.log("emit");
                     myhujinet.emit('request', req_list[i], resp);
                 }
             }
         });
-
 
         socket.on('timeout', function (){
             socket.end();
@@ -67,20 +65,17 @@ var hujinet = function (handler){
         socket.on('error', console.log);
     });
 
-
     myhujinet.server.on('error', console.log);
 
-    myhujinet.on('request', function(req, res) {
-        console.log("on request");
+    myhujinet.on('request', function (req, res) {
         handler(req, res);
     });
 
-    myhujinet.listen = function(port){
+    myhujinet.listen = function (port){
         myhujinet.server.listen(port);
-        console.log('server bound');
     };
 
-    myhujinet.close = function(){
+    myhujinet.close = function (){
         myhujinet.server.close();
         myhujinet.emit('close');
     };

@@ -1,5 +1,5 @@
 /**
- * Created by aabel on 01-Jan-15.
+ * Created by Amit Abel and Golan Ben Ami
  */
 
 /* Error vars list */

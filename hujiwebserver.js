@@ -24,14 +24,16 @@ exports.start = function (port, callback){
 
 };
 
+/* Check if the dir path is also absolute path */
 function checkPathRelativity(dir) {
-    var absolute,
-        normal;
+    var absolute, // Absolute path
+        normal;   // Normalized dir path
     absolute = path.resolve(dir);
     normal = path.normalize(dir);
     return normal !== absolute;
 }
 
+/* Return static handler */
 exports.static = function (rootFolder){
     var fixedRoot;
     if (!checkPathRelativity(rootFolder)) {
@@ -73,6 +75,7 @@ exports.static = function (rootFolder){
     }
 };
 
+/* return my use handler */
 exports.myUse = function (){
     var func =  function(request,response,next){
         var cookies_list,   //a list of "name=value" cookie strings
@@ -92,11 +95,12 @@ exports.myUse = function (){
             return next(e);
         }
     };
-    func.prototype.toString = function (){
+    // Explanation of myUse purpose.
+    func.toString = function (){
         return "This method returns an handler that for each cookie in the given request, " +
             "the handler set a temporary cookie in the response with default root path.\n" +
-            "This use is needed for setting request cookies in easy and efficient way, " +
-            "without adding new parameters to it.\n The method doesn't require arguments.";
+            "This handler is needed for setting request cookies in easy and efficient way, " +
+            "without adding new parameters to it.\nThe method doesn't require arguments.";
     };
     return func;
 };
