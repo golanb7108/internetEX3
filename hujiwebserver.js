@@ -32,8 +32,7 @@ function checkPathRelativity(dir) {
     return normal !== absolute;
 }
 
-exports.static = function(rootFolder)
-{
+exports.static = function (rootFolder){
     var fixedRoot;
     if (!checkPathRelativity(rootFolder)) {
         fixedRoot = rootFolder;
@@ -74,7 +73,30 @@ exports.static = function(rootFolder)
     }
 };
 
-exports.myUse = function()
-{
-
+exports.myUse = function (){
+    var func =  function(request,response,next){
+        var cookies_list,   //a list of "name=value" cookie strings
+            cookie_num;       // one pair of "name=value" cookie string
+        try {
+            cookies_list = request.get('Cookie').split(';');
+            for (cookie_num in cookies_list){
+                response.cookie(hujiparser.trim(cookies_list[cookie_num].split('=')[0]),
+                        hujiparser.trim(cookies_list[cookie_num].split('=')[1]), null);
+                console.log("!!!!!!!!!!!!!!!");
+                console.log(response.toString());
+                console.log("!!!!!!!!!!!!!!!");
+            }
+            return next();
+        }
+        catch(e){
+            return next(e);
+        }
+    };
+    func.prototype.toString = function (){
+        return "This method returns an handler that for each cookie in the given request, " +
+            "the handler set a temporary cookie in the response with default root path.\n" +
+            "This use is needed for setting request cookies in easy and efficient way, " +
+            "without adding new parameters to it.\n The method doesn't require arguments.";
+    };
+    return func;
 };

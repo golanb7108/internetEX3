@@ -4,7 +4,6 @@
 
 /* All requires */
 var http = require('http');
-var net = require('net');
 var hujiserver = require('./hujiwebserver');
 
 /* Server variables */
@@ -15,6 +14,16 @@ hujiserver.start(port, function (e, server){
     if (typeof server !== 'undefined'){
         console.log("test.start");
         server.use('/EX2', hujiserver.static('/www'));
+        server.use('/www/:x', function(req, res, next){
+            if (req.params['x'] === 'EX2'){
+                console.log("Test check_params succeed");
+            }
+            next();
+        });
+        server.use('/', function(req, res, next){
+            console.log("Next test succeed");
+            next();
+        });
     }
 });
 
@@ -31,22 +40,47 @@ function getOptions(host, port, path, connection) {
     };
 }
 
-
 function expect_success_test(){
     http.get(getOptions('localhost', '8124','/EX2/index.html','close'), function (resp){
-            resp.on('data', function (data){
-                if (resp.statusCode === 200){
-                    console.log('expect_success_test success :)');
-                } else {
-                    console.log('expect_success_test failed on: ' +
+        resp.on('data', function (data){
+            if (resp.statusCode === 200){
+                console.log('expect_success_test success :)');
+            } else {
+                console.log('expect_success_test failed on: ' +
                     resp.statusCode);
+            }
+        });
+        resp.on('error',function (error){
+            console.log('expect_success_test failed on: ' + error);
+        });
+    }).on('error', console.log);
+}
+
+function expect_404_test(){
+    http.get(getOptions('localhost', '8124','/EX2/kishkush.html','close'),
+        function(resp){
+            resp.on('data', function (data){
+                if (resp.statusCode === 404){
+                    console.log('expect_404_test success :)');
+                } else {
+                    console.log('expect_404_test failed on: ' + resp.statusCode);
                 }
             });
             resp.on('error',function (error){
-                console.log('expect_success_test failed on: ' + error);
+                console.log('expect_404_test failed on: ' + error);
             });
-    });
+        }).on('error', console.log);
+}
+
+function check_params(){
+    http.get(getOptions('localhost', '8124','/www/EX2/index.html','close'), function (resp){
+        resp.on('error',function (error){
+            console.log('check_params failed on: ' + error);
+        });
+    }).on('error', console.log);
 }
 
 
 expect_success_test();
+check_params();
+expect_404_test();

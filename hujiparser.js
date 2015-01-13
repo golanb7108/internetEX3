@@ -163,4 +163,4 @@ function body_parser(request){
 }
 
 exports.parse = parse;
-
+exports.trim = trim;

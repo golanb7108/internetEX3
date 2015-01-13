@@ -49,8 +49,8 @@ var HttpResponse = function (con_socket, connection_open){
             }
             response_str += settings.LINE_END;
         }
-        response_str += settings.LINE_END;
         if (this.message_body){
+            response_str += settings.LINE_END;
             response_str += this.message_body +settings. LINE_END;
         }
         return response_str;
@@ -97,26 +97,25 @@ var HttpResponse = function (con_socket, connection_open){
         }
         if ((options === undefined) || (options === null)){
             options = {}
-        } else {
-            date_to_expire = new Date(settings.DEFAULT_DATE);
-            if ('maxAge' in options){
-                if (parseInt(options['maxAge']) <= 0) {
-                    options['maxAge'] = 0;
-                }
-                date_to_expire = new Date(Date.now() + parseInt(options['maxAge']));
+        }
+        date_to_expire = new Date(settings.DEFAULT_DATE);
+        if ('maxAge' in options){
+            if (parseInt(options['maxAge']) <= 0) {
+                options['maxAge'] = 0;
             }
-            if (!('expires' in options)) {
-                options['expires'] = date_to_expire;
-            }
-            if (!('path' in options)) {
-                options['path'] = "/";
-            }
-            if ('secure' in options){
-                options['secure'] = null;
-            }
-            if ('httpOnly' in options){
-                options['httpOnly'] = null;
-            }
+            date_to_expire = new Date(Date.now() + parseInt(options['maxAge']));
+        }
+        if (!('expires' in options)) {
+            options['expires'] = date_to_expire;
+        }
+        if (!('path' in options)) {
+            options['path'] = "/";
+        }
+        if ('secure' in options){
+            options['secure'] = null;
+        }
+        if ('httpOnly' in options){
+            options['httpOnly'] = null;
         }
         if (typeof value === 'object') {
             value = JSON.stringify(value);
