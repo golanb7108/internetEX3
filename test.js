@@ -29,6 +29,10 @@ hujiserver.start(port, function (e, server){
             console.log("Next test succeed");
             next();
         });
+        setTimeout(function (){
+            console.log("Close server");
+            server.stop();
+        }, 5000);
     }
 });
 
