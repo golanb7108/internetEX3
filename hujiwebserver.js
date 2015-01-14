@@ -42,8 +42,6 @@ exports.static = function (rootFolder){
         fixedRoot = path.join(__dirname, rootFolder);
     }
     return function(http_req, http_res, next){
-        console.log("webserver.static");
-
         var file,                                                     // Asked file
             url_pathname,                                    // file's URL pathname
             type;                                                    // file's type
@@ -52,11 +50,8 @@ exports.static = function (rootFolder){
         type = url_pathname.substr(url_pathname.lastIndexOf("."));
         http_res.entity_headers["Content-Type"] = types.get_type(type);
         file = fixedRoot + path.normalize(url_pathname);
-        console.log("file name for static: " + file);
         fs.readFile(file, function (err, data) {
             if (err) {
-                console.log("webserver.static.error");
-
                 http_res.status_code = "404";
                 http_res.reason_phrase = "Not found";
                 http_res.entity_headers["Content-Type"] = "text/plain";
@@ -67,8 +62,6 @@ exports.static = function (rootFolder){
                 next();
             }
             else {
-                console.log("webserver.static.send");
-
                 http_res.send(data.toString());
             }
         });

@@ -13,13 +13,18 @@ hujiserver.start(port, function (e, server){
     e?(console.log(e)):(console.log('server is up'));
     if (typeof server !== 'undefined'){
         console.log("test.start");
+        // First - create a static handler for the server and load it.
         server.use('/EX2', hujiserver.static('/www'));
+        // Second - create a test handler which checks the params analyzing.
         server.use('/www/:x', function(req, res, next){
             if (req.params['x'] === 'EX2'){
                 console.log("Test check_params succeed");
             }
             next();
         });
+        /*  Third, load a last test handler which checks if the next function works
+            by verifying that it is activated.
+         */
         server.use('/', function(req, res, next){
             console.log("Next test succeed");
             next();
@@ -28,7 +33,7 @@ hujiserver.start(port, function (e, server){
 });
 
 
-//The url we want is: 'localhost:8124/main.js'
+//The options for the http require.
 function getOptions(host, port, path, connection) {
     return {
         host: host,
@@ -40,6 +45,7 @@ function getOptions(host, port, path, connection) {
     };
 }
 
+// Test the server works well with a static handler - that it returns 200 for an existing file.
 function expect_success_test(){
     http.get(getOptions('localhost', '8124','/EX2/index.html','close'), function (resp){
         resp.on('data', function (data){
@@ -56,6 +62,7 @@ function expect_success_test(){
     }).on('error', console.log);
 }
 
+// Test the server works well with a static handler - that it returns 404 for a missing file.
 function expect_404_test(){
     http.get(getOptions('localhost', '8124','/EX2/kishkush.html','close'),
         function(resp){
@@ -72,6 +79,7 @@ function expect_404_test(){
         }).on('error', console.log);
 }
 
+// Test the server works well with parsing the params - check the parsed param is correct.
 function check_params(){
     http.get(getOptions('localhost', '8124','/www/EX2/index.html','close'), function (resp){
         resp.on('error',function (error){
