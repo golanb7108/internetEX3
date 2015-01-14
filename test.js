@@ -4,7 +4,6 @@
 
 /* All requires */
 var http = require('http');
-var net = require('net');
 var hujiserver = require('./hujiwebserver');
 
 /* Server variables */
@@ -43,17 +42,17 @@ function getOptions(host, port, path, connection) {
 
 function expect_success_test(){
     http.get(getOptions('localhost', '8124','/EX2/index.html','close'), function (resp){
-            resp.on('data', function (data){
-                if (resp.statusCode === 200){
-                    console.log('expect_success_test success :)');
-                } else {
-                    console.log('expect_success_test failed on: ' +
+        resp.on('data', function (data){
+            if (resp.statusCode === 200){
+                console.log('expect_success_test success :)');
+            } else {
+                console.log('expect_success_test failed on: ' +
                     resp.statusCode);
-                }
-            });
-            resp.on('error',function (error){
-                console.log('expect_success_test failed on: ' + error);
-            });
+            }
+        });
+        resp.on('error',function (error){
+            console.log('expect_success_test failed on: ' + error);
+        });
     }).on('error', console.log);
 }
 

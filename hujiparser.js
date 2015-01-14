@@ -36,12 +36,12 @@ function is_header_line(line){
 
 /* parse given request string and create new request object */
 function parse(req_string){
-    var current_req_index = 0,                       // Current request index
-        end_index = 0,                    // Last line of the current request
-        http_req,                                   // Current request object
-        http_req_array = [], // Array of all the requests in the given string
-        req_lines = req_string.split(settings.LINE_END), // List of all requests lines
-        start_index = 0;                 // First line of the current request
+    var current_req_index = 0,                                  // Current request index
+        end_index = 0,                               // Last line of the current request
+        http_req,                                              // Current request object
+        http_req_array = [],            // Array of all the requests in the given string
+        req_lines = req_string.split(settings.LINE_END),   // List of all requests lines
+        start_index = 0;                            // First line of the current request
     if (not_finished_req){
         req_lines = not_finished_req.concat(req_lines);
     }
@@ -143,10 +143,11 @@ function parse_request(req_lines){
     return http_req;
 }
 
+/* Parse the body into params */
 function body_parser(request){
-    var body_type = request.get(settings.BODY_TYPE_HEADER);
-    var param_pairs;
-    var param;
+    var body_type = request.get(settings.BODY_TYPE_HEADER), // The type of the message body
+        param_pairs,                                        // A pair of key-value of param
+        param;                                              // New param
     if (body_type){
         if (body_type === types.get_type('.json')){
             request.body_params = JSON.parse(request.body);
@@ -163,4 +164,4 @@ function body_parser(request){
 }
 
 exports.parse = parse;
-
+exports.trim = trim;

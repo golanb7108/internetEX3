@@ -1,6 +1,8 @@
 /**
- * Created by gbenami on 12/21/2014.
+ * Created by Amit Abel and Golan Ben Ami
  */
+
+/* All Requires */
 var test = require("./hujiwebserver");
 
 
