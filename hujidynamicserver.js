@@ -40,7 +40,7 @@ var hujidynamicserver = function ()
 
     // Stop the server
     app.stop = function (){
-
+        server.server.close();
     };
 
     // USE method
