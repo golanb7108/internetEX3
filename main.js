@@ -11,8 +11,15 @@ var hujiserver = require('./hujiwebserver');
 /* Server variables */
 port = 8124;
 
-var app =hujiserver.start(port,function(e) {
-    e ? (console.log(e)) : console.log('server is up port 888');
+hujiserver.start(port,function(e, server) {
+    e ? (console.log(e)) : console.log('server is up port 8124');
+    console.log("start");
+    server.use('/', hujiserver.static('/www'));
+
+    server.post('/register', register);
+    server.post('/login', login);
+
+
 });
 
 function register(request, response, next){
@@ -40,6 +47,7 @@ function login(request, response, next){
         session_id,
         user_name,
         user_obj;
+    alert("hi");
     try {
         if (request.body_params === undefined){
             throw settings.bad_request_format_error;
@@ -56,7 +64,3 @@ function login(request, response, next){
         response.send(500, e.message);
     }
 }
-
-app.post('/register', register);
-app.post('/login', login);
-

@@ -3,18 +3,38 @@
  */
 
 function login() {
+    /*
     var username = document.getElementById("user_name");
     var password = document.getElementById("password");
+
+    alert("BI");
+
     $.post("/login",
         JSON.stringify({user_name:username.value, password:password.value}),
         function(data, textStatus, jqXHR)
         {
+            alert("HI");
+
+            activate_todo();
+
             //data - response from server
         }).fail(function(jqXHR, textStatus, errorThrown)
         {
             alert(textStatus);
+            activate_todo();
+
         });
-    activate_todo();
+    alert("end login()");
+    */
+
+    var username = document.getElementById("user_name");
+    var password = document.getElementById("password");
+
+    $.post("/login",
+        function(response){
+            console.log(response);
+        }
+    );
 }
 
 function register() {
@@ -23,17 +43,19 @@ function register() {
     var password = document.getElementById("reg_pass_word");
     var ver_password = document.getElementById("ver_reg_pass_word");
 
-    $.post("/register",
-        JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
-        function(data, textStatus, jqXHR)
-        {
-            //data - response from server
-        }).fail(function(jqXHR, textStatus, errorThrown)
-        {
-            alert(textStatus);
-        });
-
+    //$.post("/register",
+    //    JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
+    //    function(data, textStatus, jqXHR)
+    //    {
+    //        activate_todo();
+    //
+    //        //data - response from server
+    //    }).fail(function(jqXHR, textStatus, errorThrown)
+    //    {
+    //        alert(textStatus);
+    //    });
     activate_todo();
+
 }
 
 function activate_register(){

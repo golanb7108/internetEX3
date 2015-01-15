@@ -41,10 +41,13 @@ var hujinet = function (handler){
     myhujinet.server = net.createServer(function (socket){ //'connection' listener
         socket.setTimeout(2000);
         socket.on('data', function (data){
+            console.log("Data: " + data.toString());
             var i,                                            // Index in the list
                 req_list = hujiparser.parse(data.toString()), // List of requests
                 resp;                                         // The new response
             for (i = 0; i < req_list.length ; i++){
+                console.log(req_list[i].method);
+
                 if (!req_list[i].method){
                     send_error(socket, req_list[i]);
                 }

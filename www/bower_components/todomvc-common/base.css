@@ -87,7 +87,7 @@ input[type="checkbox"] {
 	left: 50%;
 
 }
-#login input[type=button], #register input[type=button] {
+#login input[type=button],#login input[type=submit],#register input[type=button] {
 	line-height: 14px;
 	margin: 10px 0;
 	padding: 6px 15px;
