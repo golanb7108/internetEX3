@@ -2,14 +2,15 @@
  * Created by Amit Abel and Golan Ben Ami
  */
 
-/* All Requires */
-var test = require("./hujiwebserver");
+var uuid = require('node-uuid');
 
+exports.username_already_exist_error = new Error("The user name is already in use. please enter a different user name");
 
-test.start(8124, function (e, server){
-    e?(console.log(e)):(console.log('server is up'));
-    if (typeof server !== 'undefined'){
-        console.log("test.start");
-        server.use('/', test.static('/EX2'));
+var users = [];
+var todo_items = [];
+
+function add_user(user_name, full_name, password){
+    if (user_already_exist(user_name)){
+        return setting.
     }
-});
+}
