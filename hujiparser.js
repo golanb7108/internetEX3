@@ -150,10 +150,10 @@ function body_parser(request){
         param;                                              // New param
     if (body_type){
         if (body_type === types.get_type('.json')){
-            request.body_params = JSON.parse(request.body);
-        } else if ((body_type === types.get_type('.http_post1')) ||
-                (body_type === types.get_type('.http_post2'))){
-            param_pairs = request.body.split('&');
+            request.body_params = JSON.parse(request.message_body);
+        } else if ((body_type.split(';')[0] === types.get_type('.http_post1')) ||
+                (body_type.split(';')[0] === types.get_type('.http_post2'))){
+            param_pairs = request.message_body.split('&');
             for (param in param_pairs){
                 if (trim(param).match(/=/g)){
                     request.body_params[trim(param.split('=')[0])] = trim(param.split('=')[1]);

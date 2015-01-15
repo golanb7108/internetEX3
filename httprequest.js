@@ -17,7 +17,7 @@ var HttpRequest = function (){
     this.cookies = {};
     this.path = null;
     this.host = null;
-    this.body = null;
+    this.message_body = null;
     this.body_params = {};
 
     // Return the value of param name when present.
@@ -65,7 +65,7 @@ HttpRequest.prototype.print = function (){
     console.log(this.cookies);
     console.log(this.path);
     console.log(this.host);
-    console.log(this.body);
+    console.log(this.message_body);
     console.log(this.body_params);
 };
 

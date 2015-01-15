@@ -159,6 +159,7 @@ var HttpResponse = function (con_socket, connection_open){
                 this.set(settings.BODY_LENGTH_HEADER, len);
             }
         }
+
         this.socket.write(this.toString(), 'binary');
 
         // Close the socket after sending if it was requested
