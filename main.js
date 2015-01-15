@@ -37,7 +37,7 @@ function register(request, response, next){
         todoitems.new_user_todo_list(user_name);
         response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
         response.cookie('sessionId', session_id, {'expires':users.get_user_by_name(user_name).time_to_expire});
-        response.send(200, settings.STATUS_PHRASES[200]);
+        response.status(200).send(settings.STATUS_PHRASES[200]);
     } catch (e) {
         response.status(500).send(e.message);
     }
@@ -57,7 +57,7 @@ function login(request, response, next){
         if (users.try_to_login(user_name, password, session_id)){
             response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
             response.cookie('sessionId', session_id, {'expires':users.get_user_by_name(user_name).time_to_expire});
-            response.send(200, settings.STATUS_PHRASES[200]);
+            response.status(200).send(settings.STATUS_PHRASES[200]);
         }
     } catch (e) {
         response.status(500).send(e.message);
@@ -65,13 +65,19 @@ function login(request, response, next){
 }
 
 function get_all_todo_items(request, response, next){
-    var user_name;
+    var items,
+        session_id,
+        user_name;
     try {
-        if ((request.cookies['user_name'] === undefined) || (request.cookies['sessionId'] === undefined)){
+        user_name = request.cookies['user_name'];
+        session_id = request.cookies['sessionId'];
+        if ((user_name === undefined) || (session_id === undefined)){
             throw settings.bad_request_format_error;
         }
-        user_name = request.cookies['user_name'];
-        get_user_by_session_id(request.cookies['sessionId'])
+        if (users.check_user_valid(user_name, session_id)){
+            items = (todoitems.get_item_by_user(name).length > 0) ? todoitems.get_item_by_user(name): null;
+            response.status(200).send(items);
+        }
     } catch (e) {
         response.status(500).send(e.message);
     }
