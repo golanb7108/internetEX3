@@ -149,7 +149,7 @@ function body_parser(request){
         param_pairs,                                        // A pair of key-value of param
         param;                                              // New param
     if (body_type){
-        if (body_type === types.get_type('.json')){
+        if (body_type.split(';')[0] === types.get_type('.json')){
             request.body_params = JSON.parse(request.message_body);
         } else if ((body_type.split(';')[0] === types.get_type('.http_post1')) ||
                 (body_type.split(';')[0] === types.get_type('.http_post2'))){

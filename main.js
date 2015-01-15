@@ -24,21 +24,27 @@ hujiserver.start(port,function(e, server) {
 });
 
 function register(request, response, next){
+    console.log("register");
     var session_id,
         user_name;
     try {
         if (request.body_params === undefined){
+            console.log("register bad params");
             throw settings.bad_request_format_error;
         }
         session_id = uuid.v1();
         user_name = request.body_params['user_name'];
+        console.log(request);
         users.add_user(user_name,request.body_params['full_name'],request.body_params['password'],
                 request.body_params['verify_password'],session_id);
+        console.log("add_user");
         todoitems.new_user_todo_list(user_name);
         response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
         response.cookie('sessionId', session_id, {'expires':users.get_user_by_name(user_name).time_to_expire});
         response.send(200, settings.STATUS_PHRASES[200]);
     } catch (e) {
+        console.log("register fail");
+        console.log(e.message);
         response.send(500, e.message);
     }
 }
@@ -67,10 +73,11 @@ function login(request, response, next){
 function get_all_todo_items(request, response, next){
     var user_name;
     try {
-        if (request.cookies['user_name'] === undefined){
+        if ((request.cookies['user_name'] === undefined) || (request.cookies['sessionId'] === undefined)){
             throw settings.bad_request_format_error;
         }
         user_name = request.cookies['user_name'];
+        get_user_by_session_id(request.cookies['sessionId'])
     } catch (e) {
         response.send(500, e.message);
     }

@@ -21,7 +21,7 @@ var User = function (full_name, password, session_id){
 
 function add_user(user_name, full_name, password, verify_password, session_id){
     if ((user_name === undefined) ||(full_name === undefined) || (password === undefined)
-            || (password === undefined) || (session_id === undefined)){
+            || (verify_password === undefined) || (session_id === undefined)){
         throw this.bad_login_params_error;
     } else if (users_list[user_name] !== undefined){
         throw this.username_already_exist_error;
@@ -36,6 +36,8 @@ function add_user(user_name, full_name, password, verify_password, session_id){
 }
 
 function get_user_by_name(user_name){
+    console.log(user_name);
+    console.log(users_list);
     if (users_list[user_name] === undefined){
         throw this.bad_login_params_error;
     }
@@ -57,6 +59,8 @@ function get_user_by_session_id(session_id){
 }
 
 function try_to_login(user_name, password, session_id){
+    console.log(user_name);
+    console.log(users_list);
     if ((user_name === undefined) || (password === undefined) ||
             (session_id === undefined) || (users_list[user_name] === undefined)){
         throw this.bad_login_params_error;
