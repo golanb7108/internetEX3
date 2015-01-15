@@ -7,16 +7,26 @@ function login() {
     var username = document.getElementById("user_name");
     var password = document.getElementById("password");
 
-
-    $.post("/login",
-        JSON.stringify({user_name:username.value, password:password.value}),
-        function(data, textStatus, jqXHR)
-        {
-            activate_todo();
-        }).fail(function(jqXHR, textStatus, errorThrown)
-        {
-            alert(textStatus);
-        });
+    $.ajax ({
+        url: "/login",
+        type: "POST",
+        data: JSON.stringify({user_name:username.value, password:password.value}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data, textStatus) {
+            if (data.toString() === '500'){
+                alert(textStatus);
+                alert("Wrong login details");
+            }
+            else {
+                // Fill list with his tasks
+                activate_todo();
+            }
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
 }
 
 function register() {
@@ -25,22 +35,36 @@ function register() {
     var password = document.getElementById("reg_pass_word");
     var ver_password = document.getElementById("ver_reg_pass_word");
 
-    $.post("/register",
-        JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
-        function(data, textStatus, jqXHR)
-        {
-            activate_todo();
+    $.ajax ({
+        url: "/register",
+        type: "POST",
+        data: JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data, textStatus) {
+            if (data.toString() === '500'){
+                alert(textStatus);
+                alert("Wrong login details");
+            }
+            else {
+                // Fill list with his tasks
+                activate_todo();
+            }
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
+}
 
-        }).fail(function(jqXHR, textStatus, errorThrown)
-        {
-            alert(textStatus);
-        });
+function runScript(e) {
+    if (e.keyCode == 13) {
+        addItem();
+    }
 }
 
 function addItem() {
-    if (document.getElementById("new-todo").value.slice(-1) == 13){
         alert("ya");
-    }
 };
 
 function activate_register(){
