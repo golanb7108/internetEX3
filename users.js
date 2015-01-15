@@ -59,8 +59,6 @@ function get_user_by_session_id(session_id){
 }
 
 function try_to_login(user_name, password, session_id){
-    console.log(user_name);
-    console.log(users_list);
     if ((user_name === undefined) || (password === undefined) ||
             (session_id === undefined) || (users_list[user_name] === undefined)){
         throw this.bad_login_params_error;
@@ -70,7 +68,7 @@ function try_to_login(user_name, password, session_id){
     }
     users_list[user_name].session_id = session_id;
     users_list[user_name].time_to_expire = new Date(Date.now() + settings.DEFALUT_TIME_TO_EXPIRE);
-    return 0;
+    return 1;
 }
 
 exports.add_user = add_user;
