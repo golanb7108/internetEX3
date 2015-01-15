@@ -12,14 +12,15 @@ var hujiserver = require('./hujiwebserver');
 port = 8124;
 
 hujiserver.start(port,function(e, server) {
-    e ? (console.log(e)) : console.log('server is up port 8124');
-    console.log("start");
-    server.use('/', hujiserver.static('/www'));
+    e?(console.log(e)):(console.log('server is up'));
+    if (typeof server !== 'undefined'){
+        console.log("server start");
+        server.use('/', hujiserver.static('/www'));
+        server.post('/register', register);
+        server.post('/login', login);
 
-    server.post('/register', register);
-    server.post('/login', login);
-
-
+        server.get('/item', get_all_todo_items);
+    }
 });
 
 function register(request, response, next){
@@ -34,8 +35,8 @@ function register(request, response, next){
         users.add_user(user_name,request.body_params['full_name'],request.body_params['password'],
                 request.body_params['verify_password'],session_id);
         todoitems.new_user_todo_list(user_name);
-        response.cookie('user_name', user_name, {'expires':users.get_user(user_name).time_to_expire});
-        response.cookie('sessionId', session_id, {'expires':users.get_user(user_name).time_to_expire});
+        response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
+        response.cookie('sessionId', session_id, {'expires':users.get_user_by_name(user_name).time_to_expire});
         response.send(200, settings.STATUS_PHRASES[200]);
     } catch (e) {
         response.send(500, e.message);
@@ -45,9 +46,7 @@ function register(request, response, next){
 function login(request, response, next){
     var password,
         session_id,
-        user_name,
-        user_obj;
-    alert("hi");
+        user_name;
     try {
         if (request.body_params === undefined){
             throw settings.bad_request_format_error;
@@ -55,12 +54,26 @@ function login(request, response, next){
         user_name = request.body_params['user_name'];
         password = request.body_params['password'];
         session_id = uuid.v1();
-        if (users.try_to_register(user_name, password, session_id)){
-            response.cookie('user_name', user_name, {'expires':users.get_user(user_name).time_to_expire});
-            response.cookie('sessionId', session_id, {'expires':users.get_user(user_name).time_to_expire});
+        if (users.try_to_login(user_name, password, session_id)){
+            response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
+            response.cookie('sessionId', session_id, {'expires':users.get_user_by_name(user_name).time_to_expire});
             response.send(200, settings.STATUS_PHRASES[200]);
         }
     } catch (e) {
         response.send(500, e.message);
     }
 }
+
+function get_all_todo_items(request, response, next){
+    var user_name;
+    try {
+        if (request.cookies['user_name'] === undefined){
+            throw settings.bad_request_format_error;
+        }
+        user_name = request.cookies['user_name'];
+    } catch (e) {
+        response.send(500, e.message);
+    }
+}
+
+
