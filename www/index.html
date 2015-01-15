@@ -40,7 +40,7 @@
 		<div id="todoapp">
 			<header id="header">
 				<h1>todos</h1>
-				<input id="new-todo" onkeyup="addItem()" onblur="addItem()"  placeholder="What needs to be done?" autofocus >
+				<input id="new-todo" onkeypress="return runScript(event) onblur="addItem()"  placeholder="What needs to be done?" autofocus >
 			</header>
 			<section id="main">
 				<input id="toggle-all" type="checkbox">

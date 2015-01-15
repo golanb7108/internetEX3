@@ -12,7 +12,14 @@ function login() {
         JSON.stringify({user_name:username.value, password:password.value}),
         function(data, textStatus, jqXHR)
         {
-            activate_todo();
+            if (data.toString() === '500'){
+                alert(textStatus);
+                alert("Wrong login details");
+            }
+            else {
+                // Fill list with his tasks
+                activate_todo();
+            }
         }).fail(function(jqXHR, textStatus, errorThrown)
         {
             alert(textStatus);
@@ -29,18 +36,28 @@ function register() {
         JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
         function(data, textStatus, jqXHR)
         {
-            activate_todo();
-
+            if (data.toString() === '500'){
+                alert(textStatus);
+                alert("Wrong login details");
+            }
+            else {
+                // Fill list with his tasks
+                activate_todo();
+            }
         }).fail(function(jqXHR, textStatus, errorThrown)
         {
-            alert(textStatus);
+            alert("fail:" + textStatus);
         });
 }
 
-function addItem() {
-    if (document.getElementById("new-todo").value.slice(-1) == 13){
-        alert("ya");
+function runScript(e) {
+    if (e.keyCode == 13) {
+        addItem();
     }
+}
+
+function addItem() {
+        alert("ya");
 };
 
 function activate_register(){
