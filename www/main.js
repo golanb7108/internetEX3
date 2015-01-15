@@ -7,11 +7,13 @@ function login() {
     var username = document.getElementById("user_name");
     var password = document.getElementById("password");
 
-
-    $.post("/login",
-        JSON.stringify({user_name:username.value, password:password.value}),
-        function(data, textStatus, jqXHR)
-        {
+    $.ajax ({
+        url: "/login",
+        type: "POST",
+        data: JSON.stringify({user_name:username.value, password:password.value}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data, textStatus) {
             if (data.toString() === '500'){
                 alert(textStatus);
                 alert("Wrong login details");
@@ -20,10 +22,11 @@ function login() {
                 // Fill list with his tasks
                 activate_todo();
             }
-        }).fail(function(jqXHR, textStatus, errorThrown)
-        {
-            alert(textStatus);
-        });
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
 }
 
 function register() {
@@ -32,10 +35,13 @@ function register() {
     var password = document.getElementById("reg_pass_word");
     var ver_password = document.getElementById("ver_reg_pass_word");
 
-    $.post("/register",
-        JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
-        function(data, textStatus, jqXHR)
-        {
+    $.ajax ({
+        url: "/register",
+        type: "POST",
+        data: JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data, textStatus) {
             if (data.toString() === '500'){
                 alert(textStatus);
                 alert("Wrong login details");
@@ -44,10 +50,11 @@ function register() {
                 // Fill list with his tasks
                 activate_todo();
             }
-        }).fail(function(jqXHR, textStatus, errorThrown)
-        {
-            alert("fail:" + textStatus);
-        });
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
 }
 
 function runScript(e) {
