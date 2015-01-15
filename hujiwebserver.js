@@ -8,7 +8,8 @@ var hujidynamicserver = require('./hujidynamicserver'),
     hujiparser = require('./hujiparser'),
     fs = require('fs'),
     url = require('url'),
-    path = require('path');
+    path = require('path'),
+    settings = require('./settings');
 
 /* Start a new server and return its id */
 exports.start = function (port, callback){
@@ -53,7 +54,7 @@ exports.static = function (rootFolder){
         fs.readFile(file, function (err, data) {
             if (err) {
                 http_res.status_code = "404";
-                http_res.reason_phrase = "Not found";
+                http_res.reason_phrase = settings.STATUS_PHRASES[404];
                 http_res.entity_headers["Content-Type"] = "text/plain";
                 http_res.general_headers["Connection"] = "close";
                 http_res.message_body = "The requested URL " + file +
@@ -78,9 +79,6 @@ exports.myUse = function (){
             for (cookie_num in cookies_list){
                 response.cookie(hujiparser.trim(cookies_list[cookie_num].split('=')[0]),
                         hujiparser.trim(cookies_list[cookie_num].split('=')[1]), null);
-                console.log("!!!!!!!!!!!!!!!");
-                console.log(response.toString());
-                console.log("!!!!!!!!!!!!!!!");
             }
             return next();
         }

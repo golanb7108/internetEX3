@@ -86,6 +86,7 @@ var HttpResponse = function (con_socket, connection_open){
         } else {
             this.reason_phrase = settings.STATUS_PHRASES[code];
         }
+        return this;
     };
 
     // Get the case-insensitive response header field.
@@ -159,9 +160,7 @@ var HttpResponse = function (con_socket, connection_open){
                 this.set(settings.BODY_LENGTH_HEADER, len);
             }
         }
-
         this.socket.write(this.toString(), 'binary');
-
         // Close the socket after sending if it was requested
         this.socket.on('drain', function (){
             if (!this.keep_alive){
