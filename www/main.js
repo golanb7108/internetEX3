@@ -2,6 +2,8 @@
  * Created by gbenami on 11/28/2014.
  */
 
+var task_line =  document.getElementById("new-todo");
+
 function login() {
 
     var username = document.getElementById("user_name");
@@ -13,9 +15,10 @@ function login() {
         data: JSON.stringify({user_name:username.value, password:password.value}),
         dataType: "json",
         contentType: "application/json; charset=utf-8",
-        success: function(data, textStatus) {
+        success: function(data, textStatus, messageBody) {
             if (data.toString() === '500'){
-                alert(textStatus);
+                alert("status: " + textStatus);
+                alert("messageBody: " + messageBody);
                 alert("Wrong login details");
             }
             else {
@@ -64,7 +67,29 @@ function runScript(e) {
 }
 
 function addItem() {
-        alert("ya");
+    var task = task_line.value;
+    if (task === '') return;
+
+    $.ajax ({
+        url: "/register",
+        type: "POST",
+        data: JSON.stringify({task: task}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data, textStatus) {
+            if (data.toString() === '500'){
+                alert(textStatus);
+                alert("Wrong login details");
+            }
+            else {
+                // Fill list with his tasks
+                activate_todo();
+            }
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
 };
 
 function activate_register(){
@@ -85,4 +110,3 @@ function activate_todo(){
     document.getElementById("todoapp").style.display = "block";
 }
 
-activate_login();

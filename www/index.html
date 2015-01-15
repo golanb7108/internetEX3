@@ -20,14 +20,14 @@
 
 			</form>
 		</div>
-		<div id="register">
+		<div id="register" style="display: none;">
 			<form name="registerForm">
 				<header id="register_header">
 					<h2> Register header </h2>
 				</header>
 				<input id="full_name" type="text" placeholder="Enter full name" autofocus>
 				<br>
-				<input id="reg_user_name" type="text" placeholder="Enter user name" autofocus>
+				<input id="reg_user_name" type="text" placeholder="Enter user name">
 				<br>
 				<input id="reg_pass_word" type="password" placeholder="Enter password">
 				<br>
@@ -37,10 +37,10 @@
 
 			</form>
 		</div>
-		<div id="todoapp">
+		<div id="todoapp" style="display: none;">
 			<header id="header">
 				<h1>todos</h1>
-				<input id="new-todo" onkeypress="return runScript(event) onblur="addItem()"  placeholder="What needs to be done?" autofocus >
+				<input id="new-todo" onkeypress="return runScript(event)" onblur="addItem()"  placeholder="What needs to be done?" autofocus >
 			</header>
 			<section id="main">
 				<input id="toggle-all" type="checkbox">
