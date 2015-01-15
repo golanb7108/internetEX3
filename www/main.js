@@ -4,8 +4,39 @@
 
 var task_line =  document.getElementById("new-todo");
 
-function login() {
+function fillList() {
+    $.ajax ({
+        url: "/item",
+        type: "GET",
+        success: function(data, textStatus, messageBody) {
+            if (data.toString() === '500'){
+                alert("Loading list failed. Try again.");
+            }
+            else {
+                var all_items = JSON.parse(data);
+                for (var i = 0; i < all_items.length; i++){
+                    if (typeof all_items[i] === 'undefined') continue;
 
+
+                }
+
+
+
+
+
+
+
+
+
+            }
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            alert("Loading list failed. Try again.");
+        }
+    });
+}
+
+function login() {
     var username = document.getElementById("user_name");
     var password = document.getElementById("password");
 
@@ -17,8 +48,6 @@ function login() {
         contentType: "application/json; charset=utf-8",
         success: function(data, textStatus, messageBody) {
             if (data.toString() === '500'){
-                alert("status: " + textStatus);
-                alert("messageBody: " + messageBody);
                 alert("Wrong login details");
             }
             else {
@@ -27,7 +56,7 @@ function login() {
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
-            alert(errorThrown);
+            alert("Wrong login details");
         }
     });
 }
@@ -78,8 +107,7 @@ function addItem() {
         contentType: "application/json; charset=utf-8",
         success: function(data, textStatus) {
             if (data.toString() === '500'){
-                alert(textStatus);
-                alert("Wrong login details");
+                alert("Add Item failed");
             }
             else {
                 // Fill list with his tasks
@@ -87,7 +115,7 @@ function addItem() {
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
-            alert(errorThrown);
+            alert("Add Item failed");
         }
     });
 };

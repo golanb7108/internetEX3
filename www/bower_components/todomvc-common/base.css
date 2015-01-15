@@ -36,7 +36,8 @@ body {
 button,
 input[type="checkbox"] {
   outline: none;
-	color: #000000;
+	color: pink;
+	background-color: #000000;
 }
 
 #login, #register {
