@@ -42,9 +42,14 @@ to work with the express API.
    dynamic functions that will cause DOS.
    How would you make sure that those functions will get executed?
 ------------------------------------------------------------------
-1. Mess with the response message / file.
-2. Won't use the next function and won't send the data.
+1. Run an infinite loop with an I/O function (expensive)  that will take all of the server's resources and prevent
+   other users from using the server.
+2. The handler that runs on the server will set the location of its container of its container, i.e., the server,
+   and use the close function to close it. So the server can't handle any requests from other users.
+
 ================
-   How would you make sure that those functions will get executed?
+How would you make sure that those functions will get executed?
 ================
-Put '/' in the as the resource argument.
+First we would send a handler with a default path '/' that his handler creates a dir "/hello/hacker".
+Then the second handler we would send would surely authenticate on the server because the path /hello/hacker exists.
+
