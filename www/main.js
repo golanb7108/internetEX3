@@ -36,7 +36,7 @@ function addItem() {
     if (task === '') return;
 
     $.ajax ({
-        url: "/register",
+        url: "/item",
         type: "POST",
 
         data: JSON.stringify({id: 0, title: task, completed: 0}),
@@ -52,12 +52,13 @@ function addItem() {
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
-            alert("error: Add Item failed");
+            alert("error: " + jqXHR.status + " Add Item failed");
         }
     });
 };
 
 function login() {
+
     var username = document.getElementById("user_name");
     var password = document.getElementById("password");
 
