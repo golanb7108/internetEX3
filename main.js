@@ -124,9 +124,9 @@ function update_item_in_todo_items(request, response, next){
     try {
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
-        task_id = request.params['id'];
-        task_value = request.params['title'];
-        task_status = request.params['completed'];
+        task_id = request.body_params['id'];
+        task_value = request.body_params['title'];
+        task_status = request.body_params['completed'];
         if ((user_name === undefined) || (session_id === undefined) || (task_id === undefined)){
             throw settings.bad_request_format_error;
         }
