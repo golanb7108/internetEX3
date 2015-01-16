@@ -4,17 +4,13 @@
 
 var settings = require('./settings');
 
-exports.item_id_already_exist_error = new Error("The new item id is already in use");
 exports.bad_item_params_error = new Error("The item params are wrong. Please insert new parameters");
-
-exports.ACTIVE = 0;
-exports.COMPLETED = 1;
 
 var todo_items = [];
 
 var Item = function (task){
     this.task = task;
-    this.completed = this.COMPLETED;
+    this.completed = '0';
 };
 
 function new_user_todo_list(user_name){
@@ -31,13 +27,11 @@ function get_item_by_user(user_name){
     return todo_items[user_name];
 }
 
-function add_item_to_user(user_name, item_id, item_task){
+function add_item_to_user(user_name, item_task){
     if ((user_name === undefined) || (item_task === undefined) || (todo_items[user_name] === undefined)){
         throw settings.invalid_value_error;
-    } else if (todo_items[user_name][item_id] !== undefined){
-        throw this.item_id_already_exist_error;
     }
-    todo_items[user_name][item_id] = new Item(item_task);
+    todo_items[user_name][Object.keys(todo_items[user_name]).length] = new Item(item_task);
 }
 
 function update_item_for_user(user_name, item_id, item_task, item_status){
@@ -54,13 +48,19 @@ function update_item_for_user(user_name, item_id, item_task, item_status){
     }
 }
 
-function delete_item_for_user(user_name, task_id){
+function delete_item_for_user(user_name, item_id){
+    var index_id,
+        item_length;
     if ((user_name === undefined) || (todo_items[user_name] === undefined)){
         throw settings.invalid_value_error;
-    }  else if (todo_items[user_name][task_id] === undefined){
+    }  else if (todo_items[user_name][item_id] === undefined){
         throw this.bad_item_params_error;
     } else {
-        delete todo_items[user_name][task_id];
+        item_length = Object.keys(todo_items[user_name]).length;
+        for (index_id = item_id; index_id < item_length-1; index_id++){
+            todo_items[user_name][index_id] = todo_items[user_name][index_id+1];
+        }
+        delete todo_items[user_name][item_length-1];
     }
 }
 

@@ -105,7 +105,7 @@ function add_item_to_todo_items(request, response, next){
             throw settings.bad_request_format_error;
         }
         if (users.check_user_valid(user_name, session_id)){
-            todoitems.add_item_to_user(user_name, task_id, task_value);
+            todoitems.add_item_to_user(user_name, task_value);
             response.status(200).send(settings.STATUS_PHRASES[200]);
         }
     } catch (e) {
