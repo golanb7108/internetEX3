@@ -98,10 +98,8 @@ function add_item_to_todo_items(request, response, next){
     try {
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
-        task_id = request.body_params['id'];
         task_value = request.body_params['title'];
-        if ((user_name === undefined) || (session_id === undefined)
-            || (task_id === undefined) || (task_value === undefined)){
+        if ((user_name === undefined) || (session_id === undefined) || (task_value === undefined)){
             throw settings.bad_request_format_error;
         }
         if (users.check_user_valid(user_name, session_id)){
@@ -124,7 +122,7 @@ function update_item_in_todo_items(request, response, next){
     try {
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
-        task_id = request.body_params['id'];
+        task_id = parseInt(request.body_params['id']);
         task_value = request.body_params['title'];
         task_status = request.body_params['completed'];
         if ((user_name === undefined) || (session_id === undefined) || (task_id === undefined)){
@@ -148,12 +146,12 @@ function delete_item_in_todo_items(request, response, next){
     try {
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
-        task_id = request.params['id'];
+        task_id = parseInt(request.params['id']);
         if ((user_name === undefined) || (session_id === undefined) || (task_id === undefined)){
             throw settings.bad_request_format_error;
         }
         if (users.check_user_valid(user_name, session_id)){
-            if (task_id == settings.DELETE_ALL){
+            if (task_id === settings.DELETE_ALL){
                 todoitems.delete_all_items_for_user(user_name);
             } else {
                 todoitems.delete_item_for_user(user_name, task_id);

@@ -10,7 +10,7 @@ var todo_items = [];
 
 var Item = function (task){
     this.task = task;
-    this.completed = '0';
+    this.completed = settings.ACTIVE_TASK;
 };
 
 function new_user_todo_list(user_name){
