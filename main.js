@@ -82,8 +82,9 @@ function get_all_todo_items(request, response, next){
             throw settings.bad_request_format_error;
         }
         if (users.check_user_valid(user_name, session_id)){
-            items = (todoitems.get_item_by_user(name).length > 0) ? todoitems.get_item_by_user(name): null;
+            items = (Object.keys(todoitems.get_item_by_user(user_name)).length > 0) ? todoitems.get_item_by_user(user_name): {};
             response.status(200).send(items);
+
         }
     } catch (e) {
         response.status(500).send(e.message);
