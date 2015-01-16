@@ -4,6 +4,30 @@
 
 var task_line =  document.getElementById("new-todo");
 
+function setTaskInHTML (div, task, i) {
+
+    var template
+        =	'<li data-id="{{id}}" class="{{completed}}">'
+        +		'<div class="view">'
+        +			'<input class="toggle" type="checkbox" {{checked}}>'
+        +			'<label>{{title}}</label>'
+        +			'<button class="destroy" onclick="deleteItem()"></button>'
+        +		'</div>'
+        +	'</li>';
+
+    template = template.replace('{{id}}', i);
+    template = template.replace('{{title}}', task.task);
+    template = template.replace('{{completed}}', task.completed);
+    if (task.completed === 1){
+        template = template.replace('{{checked}}', 'checked');
+    }
+    else {
+        template = template.replace('{{checked}}', '');
+    }
+
+    div.appendChild(template);
+}
+
 function fillList() {
     var all = document.getElementById('all');
     var completed = document.getElementById('completed');
@@ -24,24 +48,15 @@ function fillList() {
                 for (var i = 0; i < all_items.length; i++){
 
                     if (typeof all_items[i] === 'undefined') continue;
-
+                    setTaskInHTML(all, all_items[i], i);
                     if (all_items[i].completed = 1){
+                        setTaskInHTML(completed, all_items[i], i);
 
                     }
                     else { // The task should be in active
-
+                        setTaskInHTML(active, all_items[i], i);
                     }
-
-                    var template
-                    =	'<li data-id="{{id}}" class="{{completed}}">'
-                    +		'<div class="view">'
-                    +			'<input class="toggle" type="checkbox" {{checked}}>'
-                    +			'<label>{{title}}</label>'
-                    +			'<button class="destroy" onclick="deleteItem()"></button>'
-                    +		'</div>'
-                    +	'</li>';
                 }
-
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
