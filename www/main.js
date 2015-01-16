@@ -25,7 +25,7 @@ function setTaskInHTML (div, task, i) {
         template = template.replace('{{checked}}', '');
     }
 
-    div.appendChild(template);
+    div.innerHTML += (template);
 }
 
 function fillList() {
