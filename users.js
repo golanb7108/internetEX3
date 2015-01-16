@@ -44,20 +44,6 @@ function get_user_by_name(user_name){
     return users_list[user_name];
 }
 
-//function get_user_by_session_id(session_id){
-//    var user;
-//    for (user in users_list){
-//        if (users_list[user].session_id === session_id){
-//            if (users_list[user].time_to_expire < Date.now()){
-//                throw this.user_expire_time_error;
-//            }
-////            users_list[user] = new Date(Date.now() + settings.DEFALUT_TIME_TO_EXPIRE);
-//            return users_list[user];
-//        }
-//    }
-//    throw settings.invalid_value_error;
-//}
-
 function try_to_login(user_name, password, session_id){
     if ((user_name === undefined) || (password === undefined) ||
             (session_id === undefined) || (users_list[user_name] === undefined)){
@@ -83,6 +69,5 @@ function check_user_valid(user_name, session_id){
 
 exports.add_user = add_user;
 exports.get_user_by_name = get_user_by_name;
-//exports.get_user_by_session_id = get_user_by_session_id;
 exports.try_to_login = try_to_login;
 exports.check_user_valid = check_user_valid;
