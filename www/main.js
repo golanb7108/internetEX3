@@ -5,6 +5,13 @@
 var task_line =  document.getElementById("new-todo");
 
 function fillList() {
+    var all = document.getElementById('all');
+    var completed = document.getElementById('completed');
+    var active = document.getElementById('active');
+    all.innerHTML = "";
+    completed.innerHTML = "";
+    active.innerHTML = "";
+
     $.ajax ({
         url: "/item",
         type: "GET",
@@ -17,10 +24,22 @@ function fillList() {
                 for (var i = 0; i < all_items.length; i++){
 
                     if (typeof all_items[i] === 'undefined') continue;
-                    var id = all_items[i].id;
-                    var title = all_items[i].title;
-                    var completed = all_items[i].completed;
-                    alert("id: + " + id + "title: + " + title + "completed: + " + completed);
+
+                    if (all_items[i].completed = 1){
+
+                    }
+                    else { // The task should be in active
+
+                    }
+
+                    var template
+                    =	'<li data-id="{{id}}" class="{{completed}}">'
+                    +		'<div class="view">'
+                    +			'<input class="toggle" type="checkbox" {{checked}}>'
+                    +			'<label>{{title}}</label>'
+                    +			'<button class="destroy" onclick="deleteItem()"></button>'
+                    +		'</div>'
+                    +	'</li>';
                 }
 
             }
@@ -55,7 +74,7 @@ function addItem() {
                 fillList();
             }
             else{
-                alert("Add Item failed");
+                alert(jqXHR.status + " Add Item failed");
             }
         }
     });

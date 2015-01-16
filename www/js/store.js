@@ -11,6 +11,7 @@
 	 * real life you probably would be making AJAX calls
 	 */
 	function Store(name, callback) {
+		/*
 		callback = callback || function () {};
 
 		this._dbName = name;
@@ -24,6 +25,7 @@
 		}
 
 		callback.call(this, JSON.parse(localStorage[name]));
+		*/
 	}
 
 	/**
@@ -40,6 +42,7 @@
 	 * });
 	 */
 	Store.prototype.find = function (query, callback) {
+		/*
 		if (!callback) {
 			return;
 		}
@@ -54,6 +57,7 @@
 			}
 			return true;
 		}));
+		*/
 	};
 
 	/**
@@ -62,8 +66,10 @@
 	 * @param {function} callback The callback to fire upon retrieving data
 	 */
 	Store.prototype.findAll = function (callback) {
+		/*
 		callback = callback || function () {};
 		callback.call(this, JSON.parse(localStorage[this._dbName]).todos);
+		*/
 	};
 
 	/**
@@ -75,6 +81,7 @@
 	 * @param {number} id An optional param to enter an ID of an item to update
 	 */
 	Store.prototype.save = function (updateData, callback, id) {
+		/*
 		var data = JSON.parse(localStorage[this._dbName]);
 		var todos = data.todos;
 
@@ -101,6 +108,7 @@
 			localStorage[this._dbName] = JSON.stringify(data);
 			callback.call(this, [updateData]);
 		}
+		*/
 	};
 
 	/**
@@ -110,6 +118,7 @@
 	 * @param {function} callback The callback to fire after saving
 	 */
 	Store.prototype.remove = function (id, callback) {
+		/*
 		var data = JSON.parse(localStorage[this._dbName]);
 		var todos = data.todos;
 
@@ -122,6 +131,7 @@
 
 		localStorage[this._dbName] = JSON.stringify(data);
 		callback.call(this, JSON.parse(localStorage[this._dbName]).todos);
+		*/
 	};
 
 	/**
@@ -130,11 +140,14 @@
 	 * @param {function} callback The callback to fire after dropping the data
 	 */
 	Store.prototype.drop = function (callback) {
+		/*
 		localStorage[this._dbName] = JSON.stringify({todos: []});
 		callback.call(this, JSON.parse(localStorage[this._dbName]).todos);
+		*/
 	};
 
 	// Export to window
 	window.app = window.app || {};
 	window.app.Store = Store;
+
 })(window);
