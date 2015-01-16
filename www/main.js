@@ -48,11 +48,15 @@ function addItem() {
             }
             else {
                 fillList();
-                activate_todo();
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
-            alert("error: " + jqXHR.status + " Add Item failed");
+            if (jqXHR.status === 200){
+                fillList();
+            }
+            else{
+                alert("Add Item failed");
+            }
         }
     });
 };
