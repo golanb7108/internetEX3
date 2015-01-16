@@ -44,9 +44,13 @@ function fillList() {
                 alert("success: Loading list failed. Try again.");
             }
             else {
+                alert("data: " + data.toString());
                 var all_items = JSON.parse(data);
-                for (var i = 0; i < all_items.length; i++){
+                console.log("all_items.length: " +all_items.length);
+                alert("data: " + data.toString());
 
+                for (var i = 0; i < all_items.length; i++){
+                    alert("in loop" + i);
                     if (typeof all_items[i] === 'undefined') continue;
                     setTaskInHTML(all, all_items[i], i);
                     if (all_items[i].completed = 1){
@@ -57,6 +61,7 @@ function fillList() {
                         setTaskInHTML(active, all_items[i], i);
                     }
                 }
+                alert("after loop");
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
@@ -81,11 +86,15 @@ function addItem() {
                 alert("success: Add Item failed");
             }
             else {
+                alert("success: Add Item success");
+
                 fillList();
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
             if (jqXHR.status === 200){
+                alert("fail: Add Item success");
+
                 fillList();
             }
             else{
