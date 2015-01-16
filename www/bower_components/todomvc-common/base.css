@@ -316,7 +316,6 @@ label[for='toggle-all'] {
 }
 
 #todo-list li .destroy {
-	display: none;
 	position: absolute;
 	top: 0;
 	right: 10px;
@@ -328,6 +327,8 @@ label[for='toggle-all'] {
 	color: #a88a8a;
 	-webkit-transition: all 0.2s;
 	transition: all 0.2s;
+	display: block;
+	content: '✖';
 }
 
 #todo-list li .destroy:hover {
