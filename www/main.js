@@ -102,7 +102,8 @@ function addItem() {
     $.ajax ({
         url: "/register",
         type: "POST",
-        data: JSON.stringify({task: task}),
+
+        data: JSON.stringify({id: 0, title: task, completed: 0}),
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(data, textStatus) {
