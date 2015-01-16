@@ -10,31 +10,52 @@ function fillList() {
         type: "GET",
         success: function(data, textStatus, messageBody) {
             if (data.toString() === '500'){
-                alert("Loading list failed. Try again.");
+                alert("success: Loading list failed. Try again.");
             }
             else {
                 var all_items = JSON.parse(data);
                 for (var i = 0; i < all_items.length; i++){
+
                     if (typeof all_items[i] === 'undefined') continue;
-
-
+                    var id = all_items[i].id;
+                    var title = all_items[i].title;
+                    var completed = all_items[i].completed;
+                    alert("id: + " + id + "title: + " + title + "completed: + " + completed);
                 }
-
-
-
-
-
-
-
-
 
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
-            alert("Loading list failed. Try again.");
+            alert("error: " + jqXHR.status + " Loading list failed. Try again.");
         }
     });
 }
+
+function addItem() {
+    var task = task_line.value;
+    if (task === '') return;
+
+    $.ajax ({
+        url: "/register",
+        type: "POST",
+
+        data: JSON.stringify({id: 0, title: task, completed: 0}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data, textStatus) {
+            if (data.toString() === '500'){
+                alert("success: Add Item failed");
+            }
+            else {
+                fillList();
+                activate_todo();
+            }
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            alert("error: Add Item failed");
+        }
+    });
+};
 
 function login() {
     var username = document.getElementById("user_name");
@@ -51,12 +72,18 @@ function login() {
                 alert("Wrong login details");
             }
             else {
-                // Fill list with his tasks
+                fillList();
                 activate_todo();
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
-            alert("Wrong login details");
+            if (jqXHR.status === 200){
+                fillList();
+                activate_todo();
+            }
+            else{
+                alert("Wrong login details");
+            }
         }
     });
 }
@@ -71,20 +98,31 @@ function register() {
         url: "/register",
         type: "POST",
         data: JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
-        dataType: "json",
+        dataType: "jsonp",
+        cache: false,
         contentType: "application/json; charset=utf-8",
         success: function(data, textStatus) {
-            if (data.toString() === '500'){
-                alert(textStatus);
-                alert("Wrong login details");
-            }
-            else {
-                // Fill list with his tasks
-                activate_todo();
+            try {
+                if (data.toString() === '500') {
+                    alert(textStatus);
+                    alert("Wrong login details");
+                }
+                else {
+                    fillList();
+                    activate_todo();
+                }
+            } catch (e) {
+                alert("GOLAN");
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
-            alert(errorThrown);
+            if (jqXHR.status === 200){
+                fillList();
+                activate_todo();
+            }
+            else{
+                alert("Wrong login details");
+            }
         }
     });
 }
@@ -95,31 +133,7 @@ function runScript(e) {
     }
 }
 
-function addItem() {
-    var task = task_line.value;
-    if (task === '') return;
 
-    $.ajax ({
-        url: "/register",
-        type: "POST",
-
-        data: JSON.stringify({id: 0, title: task, completed: 0}),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(data, textStatus) {
-            if (data.toString() === '500'){
-                alert("Add Item failed");
-            }
-            else {
-                // Fill list with his tasks
-                activate_todo();
-            }
-        },
-        error: function(jqXHR,textStatus, errorThrown) {
-            alert("Add Item failed");
-        }
-    });
-};
 
 function activate_register(){
     document.getElementById("login").style.display = "none";
