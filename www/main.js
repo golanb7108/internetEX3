@@ -56,6 +56,23 @@ function addItem() {
         }
     });
 };
+function deleteItem(id) {
+
+    $.ajax({
+        url: '/item',
+        type: 'DELETE',
+        data: JSON.stringify({id: id}),
+        success: function(data) {
+            fillList();
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            if (jqXHR.status === 200) {
+                fillList();
+            }
+            else alert(errorThrown);
+        }
+    });
+}
 
 function login() {
 
