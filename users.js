@@ -36,8 +36,6 @@ function add_user(user_name, full_name, password, verify_password, session_id){
 }
 
 function get_user_by_name(user_name){
-    console.log(user_name);
-    console.log(users_list);
     if (users_list[user_name] === undefined){
         throw this.bad_login_params_error;
     }

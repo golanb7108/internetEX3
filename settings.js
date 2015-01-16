@@ -23,3 +23,5 @@ exports.DEFALUT_TIME_TO_EXPIRE = 1000000;
 exports.DELETE_ALL = -1;
 exports.SUCCESS = 0;
 exports.FAILURE = 1;
+exports.ACTIVE_TASK = '0';
+exports.COMPLETED_TASK = '1';
