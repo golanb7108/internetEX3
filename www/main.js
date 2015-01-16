@@ -39,12 +39,14 @@ function fillList() {
     $.ajax ({
         url: "/item",
         type: "GET",
+        dataType: "json",
+
         success: function(data, textStatus, messageBody) {
             if (data.toString() === '500'){
                 alert("success: Loading list failed. Try again.");
             }
             else {
-                alert("data: " + data.toString());
+                alert("data: " + data);
                 var all_items = JSON.parse(data);
                 console.log("all_items.length: " +all_items.length);
                 alert("data: " + data.toString());
@@ -87,6 +89,7 @@ function addItem() {
             }
             else {
                 alert("success: Add Item success");
+                task_line.value = "";
 
                 fillList();
             }
@@ -94,6 +97,7 @@ function addItem() {
         error: function(jqXHR,textStatus, errorThrown) {
             if (jqXHR.status === 200){
                 alert("fail: Add Item success");
+                task_line.value = "";
 
                 fillList();
             }
