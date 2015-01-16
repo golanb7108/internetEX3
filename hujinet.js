@@ -79,6 +79,7 @@ var hujinet = function (handler){
         myhujinet.emit('close');
     };
     event.call(myhujinet);
+    return myhujinet;
 };
 
 util.inherits(hujinet, event);

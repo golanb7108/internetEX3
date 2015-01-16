@@ -7,7 +7,7 @@ var http = require('http');
 var hujiserver = require('./hujiwebserver');
 
 /* Server variables */
-port = 8124;
+port = 8888;
 
 hujiserver.start(port, function (e, server){
     e?(console.log(e)):(console.log('server is up'));
@@ -51,7 +51,7 @@ function getOptions(host, port, path, connection) {
 
 // Test the server works well with a static handler - that it returns 200 for an existing file.
 function expect_success_test(){
-    http.get(getOptions('localhost', '8124','/EX2/index.html','close'), function (resp){
+    http.get(getOptions('localhost', '8888','/EX2/index.html','close'), function (resp){
         resp.on('data', function (data){
             if (resp.statusCode === 200){
                 console.log('expect_success_test success :)');
@@ -68,7 +68,7 @@ function expect_success_test(){
 
 // Test the server works well with a static handler - that it returns 404 for a missing file.
 function expect_404_test(){
-    http.get(getOptions('localhost', '8124','/EX2/kishkush.html','close'),
+    http.get(getOptions('localhost', '8888','/EX2/kishkush.html','close'),
         function(resp){
             resp.on('data', function (data){
                 if (resp.statusCode === 404){
@@ -85,7 +85,7 @@ function expect_404_test(){
 
 // Test the server works well with parsing the params - check the parsed param is correct.
 function check_params(){
-    http.get(getOptions('localhost', '8124','/www/EX2/index.html','close'), function (resp){
+    http.get(getOptions('localhost', '8888','/www/EX2/index.html','close'), function (resp){
         resp.on('error',function (error){
             console.log('check_params failed on: ' + error);
         });
