@@ -98,8 +98,8 @@ function add_item_to_todo_items(request, response, next){
     try {
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
-        task_id = request.params['id'];
-        task_value = request.params['title'];
+        task_id = request.body_params['id'];
+        task_value = request.body_params['title'];
         if ((user_name === undefined) || (session_id === undefined)
             || (task_id === undefined) || (task_value === undefined)){
             throw settings.bad_request_format_error;

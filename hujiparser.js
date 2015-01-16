@@ -119,6 +119,13 @@ function parse_request(req_lines){
                 sep_loc))] = trim(req_lines[line_index].substring(sep_loc+1));
         line_index += 1;
     }
+    if (http_req.get('Cookie')){
+        var cookies_list = http_req.get('Cookie').split(';');
+        for (var cookie_num in cookies_list){
+            http_req.cookies[trim(cookies_list[cookie_num].split('=')[0])] =
+                trim(cookies_list[cookie_num].split('=')[1]);
+        }
+    }
     if ((settings.BODY_LENGTH_HEADER in http_req.request_fields) &&
             (http_req.request_fields[settings.BODY_LENGTH_HEADER] != "0")){
         line_index += 1;
