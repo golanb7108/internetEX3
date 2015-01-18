@@ -11,12 +11,12 @@ function setTaskInHTML (div, task, i) {
         +		'<div class="view">'
         +			'<input class="toggle" type="checkbox" {{checked}}>'
         +			'<label>{{value}}</label>'
-        +			'<button class="destroy" onclick="deleteItem()"></button>'
+        +			'<button class="destroy" onclick="deleteItem({{id}})"></button>'
         +		'</div>'
         +	'</li>';
 
-    template = template.replace('{{id}}', i);
-    template = template.replace('{{value}}', task.task);
+    template = template.replace(/\{\{id}}/g, task.id);
+    template = template.replace('{{value}}', task.value);
     template = template.replace('{{completed}}', task.completed);
     if (task.completed === 1){
         template = template.replace('{{checked}}', 'checked');
@@ -46,7 +46,7 @@ function fillList() {
                 alert("success: Loading list failed. Try again.");
             }
             else {
-                alert("data: " + data);
+                alert("data: " + data.toString);
                 var all_items = JSON.parse(data);
                 console.log("all_items.length: " +all_items.length);
                 alert("data: " + data.toString());
