@@ -47,7 +47,7 @@ function fillList() {
             }
             else {
                 alert("data: " + data.toString);
-                var all_items = JSON.parse(data);
+                var all_items = JSON.parse(JSON.stringify(data));
                 console.log("all_items.length: " +all_items.length);
                 alert("data: " + data.toString());
 
