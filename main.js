@@ -72,8 +72,9 @@ function login(request, response, next){
 }
 
 function get_all_todo_items(request, response, next){
-    var items,
+    var items = [],
         session_id,
+        task_id,
         user_name;
     try {
         user_name = request.cookies['user_name'];
@@ -82,9 +83,13 @@ function get_all_todo_items(request, response, next){
             throw settings.bad_request_format_error;
         }
         if (users.check_user_valid(user_name, session_id)){
-            items = (Object.keys(todoitems.get_item_by_user(user_name)).length > 0) ? todoitems.get_item_by_user(user_name): {};
-            response.status(200).send(items);
-
+            for (task_id in Object.keys(todoitems.get_item_by_user(user_name))){
+                items[task_id] = {};
+                items[task_id]['id'] = task_id;
+                items[task_id]['value'] = todoitems.get_item_by_user(user_name)[task_id].task;
+                items[task_id]['completed'] = todoitems.get_item_by_user(user_name)[task_id].completed;
+            }
+            response.status(200).json(items);
         }
     } catch (e) {
         response.status(500).send(e.message);
@@ -99,7 +104,7 @@ function add_item_to_todo_items(request, response, next){
     try {
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
-        task_value = request.body_params['title'];
+        task_value = request.body_params['value'];
         if ((user_name === undefined) || (session_id === undefined) || (task_value === undefined)){
             throw settings.bad_request_format_error;
         }
@@ -124,7 +129,7 @@ function update_item_in_todo_items(request, response, next){
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
         task_id = parseInt(request.body_params['id']);
-        task_value = request.body_params['title'];
+        task_value = request.body_params['value'];
         task_status = request.body_params['completed'];
         if ((user_name === undefined) || (session_id === undefined) || (task_id === undefined)){
             throw settings.bad_request_format_error;
