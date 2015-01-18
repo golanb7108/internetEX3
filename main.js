@@ -153,7 +153,6 @@ function delete_item_in_todo_items(request, response, next){
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
         task_id = parseInt(request.body_params['id']);
-        console.log(todoitems.get_item_by_user(user_name));
         if ((user_name === undefined) || (session_id === undefined) || (task_id === undefined)){
             throw settings.bad_request_format_error;
         }
