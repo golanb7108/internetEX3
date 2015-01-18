@@ -10,13 +10,13 @@ function setTaskInHTML (div, task, i) {
         =	'<li data-id="{{id}}" class="{{completed}}">'
         +		'<div class="view">'
         +			'<input class="toggle" type="checkbox" {{checked}}>'
-        +			'<label>{{title}}</label>'
+        +			'<label>{{value}}</label>'
         +			'<button class="destroy" onclick="deleteItem()"></button>'
         +		'</div>'
         +	'</li>';
 
     template = template.replace('{{id}}', i);
-    template = template.replace('{{title}}', task.task);
+    template = template.replace('{{value}}', task.task);
     template = template.replace('{{completed}}', task.completed);
     if (task.completed === 1){
         template = template.replace('{{checked}}', 'checked');
@@ -80,7 +80,7 @@ function addItem() {
         url: "/item",
         type: "POST",
 
-        data: JSON.stringify({id: 0, title: task, completed: 0}),
+        data: JSON.stringify({id: 0, value: task, completed: 0}),
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(data, textStatus) {
