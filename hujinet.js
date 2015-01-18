@@ -5,6 +5,7 @@
 /* All Requires */
 var httpresponse = require('./httpresponse');
 var hujiparser = require('./hujiparser');
+var settings = require('./settings');
 var net = require('net');
 var types = require('./mimetypes');
 var util = require('util');
@@ -12,16 +13,18 @@ var event = require('events').EventEmitter;
 var url = require('url');
 
 
+
 /* Check if the socket has to be closed after http request */
 function check_close(http_req){
-    if (http_req.request_fields["Connection"] &&
-        http_req.request_fields["Connection"].toLowerCase() === "close"){
+    if (settings.find_key_in_list("Connection", http_req.request_fields) &&
+            http_req.request_fields[settings.find_key_in_list
+            ("Connection", http_req.request_fields)].toLowerCase() === "close"){
         return true;
     }
     if ((http_req.http_ver === '1.0') &&
-        (http_req.request_fields["Connection"] &&
-        http_req.request_fields["Connection"].toLowerCase() !==
-        "keep-alive")){
+            (settings.find_key_in_list("Connection", http_req.request_fields) &&
+            http_req.request_fields[settings.find_key_in_list("Connection", http_req.request_fields)].toLowerCase()
+            !== "keep-alive")){
         return true;
     }
     return false;
@@ -29,7 +32,7 @@ function check_close(http_req){
 
 function send_error(socket, req){
     var resp = new httpresponse.HttpResponse(socket, false); // The error response
-    resp.set('Connection', req.request_fields["Connection"]);
+    resp.set('Connection', req.request_fields[settings.find_key_in_list("Connection",req.request_fields)]);
     resp.http_ver = req.http_ver;
     resp.status(500).send();
 }
@@ -49,7 +52,8 @@ var hujinet = function (handler){
                 }
                 else{
                     resp = new httpresponse.HttpResponse(socket, check_close(req_list[i]));
-                    resp.set('Connection', req_list[i].request_fields["Connection"]);
+                    resp.set('Connection', req_list[i].request_fields[settings.find_key_in_list
+                            ("Connection",req_list[i].request_fields)]);
                     resp.http_ver = req_list[i].http_ver;
                     myhujinet.emit('request', req_list[i], resp);
                 }

@@ -126,8 +126,9 @@ function parse_request(req_lines){
                 trim(cookies_list[cookie_num].split('=')[1]);
         }
     }
-    if ((settings.BODY_LENGTH_HEADER in http_req.request_fields) &&
-            (http_req.request_fields[settings.BODY_LENGTH_HEADER] != "0")){
+    if ((settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)) &&
+            (http_req.request_fields[settings.find_key_in_list(settings.BODY_LENGTH_HEADER,
+            http_req.request_fields)] != "0")){
         line_index += 1;
         if (line_index >= req_lines.length){
             throw settings.not_finished_request_error;
@@ -141,9 +142,9 @@ function parse_request(req_lines){
             http_req.message_body += req_lines[line_index++];
         }
     }
-    if ((settings.BODY_LENGTH_HEADER in http_req.request_fields) &&
-            (http_req.message_body.length <
-            parseInt(http_req.request_fields[settings.BODY_LENGTH_HEADER]))){
+    if ((settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)) &&
+            (http_req.message_body.length < parseInt(http_req.request_fields
+            [settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)]))){
         throw settings.not_finished_request_error;
     }
     body_parser(http_req);

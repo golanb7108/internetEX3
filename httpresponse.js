@@ -60,17 +60,18 @@ var HttpResponse = function (con_socket, connection_open){
 
     // Set header field to value, or pass an object to set multiple fields at once.
     this.set  = function (field, value){
-        var param; // a parameter in field
+        var param, // a parameter in field
+            tmp_key;
         if (typeof field === "object"){
             for (param in field){
                 this.set(param, field[param]);
             }
-        } else if (field in this.general_headers){
-            this.general_headers[field] = value;
-        } else if (field in this.response_headers){
-            this.response_headers[field] = value;
-        } else if (field in this.entity_headers){
-            this.entity_headers[field] = value;
+        } else if (settings.find_key_in_list(field, this.general_headers)){
+            this.general_headers[settings.find_key_in_list(field, this.general_headers)] = value;
+        } else if (settings.find_key_in_list(field, this.response_headers)){
+            this.response_headers[settings.find_key_in_list(field, this.response_headers)] = value;
+        } else if (settings.find_key_in_list(field, this.entity_headers)){
+            this.entity_headers[settings.find_key_in_list(field, this.entity_headers)] = value;
         } else {
             // Default area for params
             this.general_headers[field] = value;
@@ -91,12 +92,12 @@ var HttpResponse = function (con_socket, connection_open){
 
     // Get the case-insensitive response header field.
     this.get = function (field){
-        if (field in this.general_headers){
-            return this.general_headers[field];
-        } else if (field in this.response_headers){
-            return this.response_headers[field];
-        } else if (field in this.entity_headers){
-            return this.entity_headers[field];
+        if (settings.find_key_in_list(field, this.general_headers)){
+            return this.general_headers[settings.find_key_in_list(field, this.general_headers)];
+        } else if (settings.find_key_in_list(field, this.response_headers)){
+            return this.response_headers[settings.find_key_in_list(field, this.response_headers)];
+        } else if (settings.find_key_in_list(field, this.entity_headers)){
+            return this.entity_headers[settings.find_key_in_list(field, this.entity_headers)];
         } else {
             // In case the field doesn't exist in response
             throw settings.invalid_value_error;
@@ -115,23 +116,23 @@ var HttpResponse = function (con_socket, connection_open){
             options = {}
         }
         date_to_expire = new Date(settings.DEFAULT_DATE);
-        if ('maxAge' in options){
-            if (parseInt(options['maxAge']) <= 0) {
+        if (settings.find_key_in_list('maxAge', options)){
+            if (parseInt(options[settings.find_key_in_list('maxAge', options)]) <= 0) {
                 options['maxAge'] = 0;
             }
-            date_to_expire = new Date(Date.now() + parseInt(options['maxAge']));
+            date_to_expire = new Date(Date.now() + parseInt(options[settings.find_key_in_list('maxAge',options)]));
         }
-        if (!('expires' in options)) {
+        if (!(settings.find_key_in_list('expires', options))) {
             options['expires'] = date_to_expire;
         }
-        if (!('path' in options)) {
+        if (!(settings.find_key_in_list('path', options))) {
             options['path'] = "/";
         }
-        if ('secure' in options){
-            options['secure'] = null;
+        if (settings.find_key_in_list('secure', options)){
+            options[settings.find_key_in_list('secure', options)] = null;
         }
-        if ('httpOnly' in options){
-            options['httpOnly'] = null;
+        if (settings.find_key_in_list('httpOnly', options)){
+            options[settings.find_key_in_list('httpOnly', options)] = null;
         }
         if (typeof value === 'object') {
             value = JSON.stringify(value);

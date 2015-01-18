@@ -25,3 +25,17 @@ exports.SUCCESS = 0;
 exports.FAILURE = 1;
 exports.ACTIVE_TASK = '0';
 exports.COMPLETED_TASK = '1';
+
+exports.find_key_in_list = function (search_key, list){
+    var key,
+        search_key_lower,
+        tmp_key;
+    search_key_lower = (typeof search_key === "string") ? search_key.toLowerCase() : search_key;
+    for (key in list){
+        tmp_key = (typeof key === "string") ? key.toLowerCase() : key;
+        if (tmp_key === search_key_lower){
+            return key;
+        }
+    }
+    return null;
+};

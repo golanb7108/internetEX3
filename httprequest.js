@@ -22,12 +22,12 @@ var HttpRequest = function (){
 
     // Return the value of param name when present.
     this.param = function (name, defaultValue){
-        if (name in this.params){
-            return this.params[name];
-        } else if (name in this.body_params){
-            return this.body_params[name];
-        } else if (name in this.query){
-            return this.query[name];
+        if (settings.find_key_in_list(name,this.params)){
+            return this.params[settings.find_key_in_list(name,this.params)];
+        } else if (settings.find_key_in_list(name,this.body_params)){
+            return this.body_params[settings.find_key_in_list(name,this.body_params)];
+        } else if (settings.find_key_in_list(name,this.query)){
+            return this.query[settings.find_key_in_list(name,this.query)];
         } else if (defaultValue){
             return defaultValue;
         } else {
@@ -38,8 +38,8 @@ var HttpRequest = function (){
     // Get the case-insensitive request header field.
     // The Referrer and Referer fields are interchangeable.
     this.get = function (field){
-        if (field in this.request_fields){
-            return this.request_fields[field];
+        if (settings.find_key_in_list(field,this.request_fields)){
+            return this.request_fields[settings.find_key_in_list(field,this.request_fields)];
         }
         return null;
     };
