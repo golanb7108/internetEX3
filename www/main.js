@@ -7,16 +7,16 @@ var task_line =  document.getElementById("new-todo");
 function setTaskInHTML (div, task, i) {
 
     var template
-        =	'<li data-id="{{id}}" class="{{completed}}">'
+        =	'<li data-id="{{id}}" class="{{completed}}" onblur="editItemDone({{id}})">'
         +		'<div class="view">'
         +			'<input class="toggle" type="checkbox" {{checked}}>'
-        +			'<label>{{value}}</label>'
+        +			'<label  ondblclick="editLabel({{id}})" >{{value}}</label>'
         +			'<button class="destroy" onclick="deleteItem({{id}})"></button>'
         +		'</div>'
         +	'</li>';
 
     template = template.replace(/\{\{id}}/g, task.id);
-    template = template.replace('{{value}}', task.value);
+    template = template.replace(/\{\{value}}/g, task.value);
     template = template.replace('{{completed}}', task.completed);
     if (task.completed === 1){
         template = template.replace('{{checked}}', 'checked');
@@ -26,6 +26,43 @@ function setTaskInHTML (div, task, i) {
     }
 
     div.innerHTML += (template);
+}
+
+function editLabel(id) {
+    var listItem = qs('[data-id="' + id + '"]');
+    var title = listItem.getElementsByTagName('label')[0].firstChild.data;
+    if (!listItem) {
+        return;
+    }
+
+    listItem.className = listItem.className + ' editing';
+
+    var input = document.createElement('input');
+    input.className = 'edit';
+    input.setAttribute('onblur', 'editItemDone(' +id+')');
+
+    listItem.appendChild(input);
+    input.focus();
+    input.value = title;
+}
+
+function editItemDone(id) {
+    var listItem = qs('[data-id="' + id + '"]');
+
+    var title = listItem.querySelector('input.edit').value;
+    if (!listItem) {
+        return;
+    }
+
+    var input = qs('input.edit', listItem);
+    listItem.removeChild(input);
+
+    listItem.className = listItem.className.replace('editing', '');
+
+    qsa('label', listItem).forEach(function (label) {
+        label.textContent = title;
+    });
+    putItem(id, title, 0);
 }
 
 function fillList() {
@@ -46,13 +83,9 @@ function fillList() {
                 alert("success: Loading list failed. Try again.");
             }
             else {
-                alert("data: " + data.toString);
                 var all_items = JSON.parse(JSON.stringify(data));
-                console.log("all_items.length: " +all_items.length);
-                alert("data: " + data.toString());
 
                 for (var i = 0; i < all_items.length; i++){
-                    alert("in loop" + i);
                     if (typeof all_items[i] === 'undefined') continue;
                     setTaskInHTML(all, all_items[i], i);
                     if (all_items[i].completed = 1){
@@ -63,7 +96,6 @@ function fillList() {
                         setTaskInHTML(active, all_items[i], i);
                     }
                 }
-                alert("after loop");
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
@@ -85,10 +117,10 @@ function addItem() {
         contentType: "application/json; charset=utf-8",
         success: function(data, textStatus) {
             if (data.toString() === '500'){
-                alert("success: Add Item failed");
+                //alert("success: Add Item failed");
             }
             else {
-                alert("success: Add Item success");
+                //alert("success: Add Item success");
                 task_line.value = "";
 
                 fillList();
@@ -96,23 +128,25 @@ function addItem() {
         },
         error: function(jqXHR,textStatus, errorThrown) {
             if (jqXHR.status === 200){
-                alert("fail: Add Item success");
+                //alert("fail: Add Item success");
                 task_line.value = "";
 
                 fillList();
             }
             else{
-                alert(jqXHR.status + " Add Item failed");
+                //alert(jqXHR.status + " Add Item failed");
             }
         }
     });
 };
-function deleteItem(id) {
 
+function deleteItem(id) {
     $.ajax({
         url: '/item',
         type: 'DELETE',
         data: JSON.stringify({id: id}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(data) {
             fillList();
         },
@@ -120,10 +154,32 @@ function deleteItem(id) {
             if (jqXHR.status === 200) {
                 fillList();
             }
-            else alert(errorThrown);
+            else alert("jqXHR.status:" + jqXHR.status + " " + errorThrown);
         }
     });
 }
+
+
+function putItem(id, value, completed) {
+    $.ajax({
+        url: "/item",
+        type: "PUT",
+
+        data: JSON.stringify({id: 0, value: task, completed: 0}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+            fillList();
+        },
+        error: function(jqXHR,textStatus, errorThrown) {
+            if (jqXHR.status === 200) {
+                fillList();
+            }
+            else alert("jqXHR.status:" + jqXHR.status + " " + errorThrown);
+        }
+    });
+}
+
 
 function login() {
 
