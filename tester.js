@@ -110,7 +110,7 @@ hujiwebserver.start(PORT, function(err, server) {
 
 
     server.use('/request/test/is', function (req, res, next) {
-        var t = req.is(req.body);
+        var t = req.is(req.message_body);
         t = ( t ) ? "true" : "false";
         res.status(200);
         res.send(t);
@@ -191,18 +191,18 @@ hujiwebserver.start(PORT, function(err, server) {
 
 
     server.use('/response/test/next', function (req, res, next) {
-        res.body = 'next1;'
+        res.message_body = 'next1;'
         next();
     });
 
     server.use('/response/test/next', function (req, res, next) {
-        res.body += 'next2;'
+        res.message_body += 'next2;'
         next();
     });
 
     server.use('/response/test/next', function (req, res, next) {
-        res.body += 'next3;'
-        res.status(200).send(res.body);
+        res.message_body += 'next3;'
+        res.status(200).send(res.message_body);
     });
 
 
@@ -391,17 +391,17 @@ var test_l = [
             data:"catch /*"
         }
     }, // request
-//    {
-//        options: {
-//            path:"/request/test/params/param123",
-//            method:"GET",
-//            test_name:"testing the request params object"
-//        },
-//        expected:{
-//            status:200,
-//            data:"{\"param\":\"param123\"}"
-//        }
-//    },
+    {
+        options: {
+            path:"/request/test/params/param123",
+            method:"GET",
+            test_name:"testing the request params object"
+        },
+        expected:{
+            status:200,
+            data:"{\"param\":\"param123\"}"
+        }
+    },
     {
         options: {
             path:"/request/test/query?q=omer+ornan",
@@ -448,17 +448,17 @@ var test_l = [
             data:"/request/test/path/gabi"
         }
     },
-//    {
-//        options: {
-//            path:"/request/test/host/omer.txt",
-//            method:"GET",
-//            test_name:"testing the request host",
-//        },
-//        expected:{
-//            status:200,
-//            data:"localhost:8080"
-//        }
-//    },
+    {
+        options: {
+            path:"/request/test/host/omer.txt",
+            method:"GET",
+            test_name:"testing the request host",
+        },
+        expected:{
+            status:200,
+            data:"localhost:8080"
+        }
+    },
     {
         options: {
             path:"/request/test/protocol/omer.txt",
@@ -497,20 +497,20 @@ var test_l = [
             data:"text/html"
         }
     },
-//    {
-//        options: {//todo gabi return "/" handler
-//            path:"/request/test/get/Something",
-//            method:"POST",
-//            test_name:"testing request get('Something')",
-//            headers:{"Content-Type": "text/html", "Content-Length":"hello world!".length},
-//            data:"hello world!"
-//
-//        },
-//        expected:{
-//            status:200,
-//            data:""
-//        }
-//    },
+    {
+        options: {//todo gabi return "/" handler
+            path:"/request/test/get/Something",
+            method:"POST",
+            test_name:"testing request get('Something')",
+            headers:{"Content-Type": "text/html", "Content-Length":"hello world!".length},
+            data:"hello world!"
+
+        },
+        expected:{
+            status:200,
+            data:""
+        }
+    },
     {
         options: {
             path:"/request/test/param?name=gabi",
@@ -523,17 +523,17 @@ var test_l = [
             data:"gabi"
         }
     },
-//    {//todo gabi return wrong handler
-//        options: {
-//            path:"/request/test/params_input/user/gabi",
-//            method:"GET",
-//            test_name:"testing request param('name') for user/:name",
-//        },
-//        expected:{
-//            status:200,
-//            data:"gabi"
-//        }
-//    },
+    {//todo gabi return wrong handler
+        options: {
+            path:"/request/test/params_input/user/gabi",
+            method:"GET",
+            test_name:"testing request param('name') for user/:name",
+        },
+        expected:{
+            status:200,
+            data:"gabi"
+        }
+    },
     {
         options: {
             path:"/request/test/is",
@@ -635,7 +635,7 @@ var test_l = [
             status:200,
             data:"",
             func: function(res){
-                return (JSON.stringify(res.headers["content-type"]) == "\"response_test_set\"");
+                return (res.get("Content-Type") == "\"response_test_set\"");
             }
         }
     },
@@ -649,7 +649,7 @@ var test_l = [
             status:200,
             data:"",
             func: function(res){
-                return (JSON.stringify(res.headers["content-type"]) == "\"response_test_set\"");
+                return (res.get("Content-Type") == "\"response_test_set\"");
             }
         }
     },
@@ -730,17 +730,17 @@ var test_l = [
             data:"{\"error\":\"something blew up\"}"
         }
     },
-//    {
-//        options: {
-//            path:"/response/test/send/6",
-//            method:"GET",
-//            test_name:"testing res.send(200)"
-//        },
-//        expected:{
-//            status:200,
-//            data:""
-//        }
-//    },
+    {
+        options: {
+            path:"/response/test/send/6",
+            method:"GET",
+            test_name:"testing res.send(200)"
+        },
+        expected:{
+            status:200,
+            data:""
+        }
+    },
     {
         options: {
             path:"/response/test/json/1",
@@ -785,28 +785,28 @@ var test_l = [
             data:"next1;next2;next3;"
         }
     },
-//    {
-//        options: {
-//            path:"/no/such/path",
-//            method:"GET",
-//            test_name:"testing 404 not found error"
-//        },
-//        expected:{
-//            status:404,
-//            data:"The requested resource not found"
-//        }
-//    },
-//    {
-//        options: {
-//            path:"/test/exceptions_handling",
-//            method:"GET",
-//            test_name:"testing exceptions handling"
-//        },
-//        expected:{
-//            status:500,
-//            data:"Internal Server Error"
-//        }
-//    },
+    {
+        options: {
+            path:"/no/such/path",
+            method:"GET",
+            test_name:"testing 404 not found error"
+        },
+        expected:{
+            status:404,
+            data:"The requested resource not found"
+        }
+    },
+    {
+        options: {
+            path:"/test/exceptions_handling",
+            method:"GET",
+            test_name:"testing exceptions handling"
+        },
+        expected:{
+            status:500,
+            data:"Internal Server Error"
+        }
+    },
     {
         options: {
             path:"/test/get",
