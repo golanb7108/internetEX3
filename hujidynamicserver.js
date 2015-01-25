@@ -36,7 +36,7 @@ var hujidynamicserver = function ()
             }
         } catch (e) {
             res.status_code = "500";
-            res.reason_phrase = "Internal Server Error";
+            res.reason_phrase = settings.STATUS_PHRASES[500];
             res.entity_headers["Content-Type"] = "text/plain";
             res.general_headers["Connection"] = "close";
             res.message_body = "Internal Server Error";
