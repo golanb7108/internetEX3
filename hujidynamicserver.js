@@ -35,12 +35,7 @@ var hujidynamicserver = function ()
                 index += 1;
             }
         } catch (e) {
-            res.status_code = "500";
-            res.reason_phrase = settings.STATUS_PHRASES[500];
-            res.entity_headers["Content-Type"] = "text/plain";
-            res.general_headers["Connection"] = "close";
-            res.message_body = "Internal Server Error";
-            res.send();
+            res.status(500).send("Internal Server Error");
         }
     };
     var server = new hujinet(app); //create a new huji net server
