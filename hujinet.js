@@ -64,7 +64,7 @@ var hujinet = function (handler){
             socket.end();
             socket.destroy();
         });
-        socket.on('close', console.log);
+
         socket.on('error', console.log);
     });
 
