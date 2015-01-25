@@ -82,9 +82,12 @@ function parse(req_string){
 /* Create single given request from string */
 function parse_request(req_lines){
     var http_req = new httprequest.HttpRequest(),  // The new request object
+        ind,
         line_index = 0,                                // Current line index
         req_header_tmp = req_lines[line_index],            // temporary line
-        sep_loc;                          // Index of ':' in header instance
+        sep_loc,                          // Index of ':' in header instance
+        query,
+        query_pair;
     if (req_header_tmp.indexOf(" ") === -1){
         throw settings.bad_request_format_error;
     }
@@ -99,7 +102,17 @@ function parse_request(req_lines){
     http_req.url = req_header_tmp.substring(0,
                 req_header_tmp.indexOf(settings.HTTP_STR)-1);
     http_req.path = url.parse(http_req.url).pathname;
-    http_req.query = url.parse(http_req.url).query;
+
+    // Parse Query
+    ind = http_req.url.indexOf('?');
+    if (ind > 0){
+        query = http_req.url.substring(ind + 1).split('&');
+        for (var j = 0; j < query.length; j++) {
+            query_pair = query[j].split('=');
+            http_req.query[trim(query_pair[0])] = trim(query_pair[1]);
+        }
+    }
+
     http_req.host = url.parse(http_req.url).hostname;
     req_header_tmp = req_header_tmp.split(settings.HTTP_STR)[1];
     if (!trim(req_header_tmp).match(settings.HTTP_VERSION_FORMAT)){
@@ -108,6 +121,8 @@ function parse_request(req_lines){
     http_req.protocol = settings.HTTP_PROTOCOL;
     http_req.http_ver = req_header_tmp;
     line_index += 1;
+
+    // Parse Fields
     while ((line_index < req_lines.length) && (req_lines[line_index] != "") &&
             (!is_a_method(req_lines[line_index].split(" ")[0]))){
         sep_loc = req_lines[line_index].indexOf(":");
