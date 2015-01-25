@@ -51,7 +51,7 @@ var HttpResponse = function (con_socket, connection_open){
             }
             response_str += settings.LINE_END;
         }
-        if (this.message_body){
+        if (this.message_body != null){
             response_str += settings.LINE_END;
             response_str += this.message_body +settings. LINE_END;
         }
@@ -144,21 +144,26 @@ var HttpResponse = function (con_socket, connection_open){
     // Send a response.
     this.send = function (body){
         if ((body !== undefined) && (body !== null)){
-            if (typeof body === 'object') {
-                return this.json(body);
-            } else if (typeof body === 'buffer') {
-                if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined){
-                    this.set(settings.BODY_TYPE_HEADER, types.get_type('.bin'));
-                }
-            } else {
-                if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined){
-                    this.set(settings.BODY_TYPE_HEADER, types.get_type('.html'));
-                }
+            if (body == ""){
+                this.message_body = "";
             }
-            this.message_body = (typeof body === 'number') ? body.toString() : body;
-            if (this.entity_headers[settings.BODY_LENGTH_HEADER] === undefined){
-                var len = (this.message_body) ? this.message_body.length : 0;
-                this.set(settings.BODY_LENGTH_HEADER, len);
+            else {
+                if (typeof body === 'object') {
+                    return this.json(body);
+                } else if (typeof body === 'buffer') {
+                    if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined){
+                        this.set(settings.BODY_TYPE_HEADER, types.get_type('.bin'));
+                    }
+                } else {
+                    if (this.entity_headers[settings.BODY_TYPE_HEADER] === undefined){
+                        this.set(settings.BODY_TYPE_HEADER, types.get_type('.html'));
+                    }
+                }
+                this.message_body = (typeof body === 'number') ? body.toString() : body;
+                if (this.entity_headers[settings.BODY_LENGTH_HEADER] === undefined){
+                    var len = (this.message_body) ? this.message_body.length : 0;
+                    this.set(settings.BODY_LENGTH_HEADER, len);
+                }
             }
         }
         this.socket.write(this.toString(), 'binary');

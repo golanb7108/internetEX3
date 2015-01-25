@@ -21,7 +21,7 @@ var HttpRequest = function (){
     this.body_params = {};
 
     // Return the value of param name when present.
-    this.param = function (name, defaultValue){
+    this.param = function (name, defaultValue) {
         if (settings.find_key_in_list(name,this.params)){
             return this.params[settings.find_key_in_list(name,this.params)];
         } else if (settings.find_key_in_list(name,this.body_params)){
@@ -41,7 +41,7 @@ var HttpRequest = function (){
         if (settings.find_key_in_list(field,this.request_fields)){
             return this.request_fields[settings.find_key_in_list(field,this.request_fields)];
         }
-        return null;
+        return "";
     };
 
     // Check if the incoming request contains the "Content-Type" header field,
