@@ -7,6 +7,8 @@ var path = require ('path');
 var fs =  require('fs');
 var net =  require('net');
 var hujinet = require('./hujinet');
+var settings = require('./settings');
+
 
 /* hujidynamicserver constructor */
 var hujidynamicserver = function ()
@@ -18,18 +20,27 @@ var hujidynamicserver = function ()
         if (typeof index === 'undefined'){
             index = 0;
         }
-        while (index < app.middleware.length){
-            if (app.middleware[index].method === "USE" ||
-                    app.middleware[index].method === req.method ){
-                match = does_path_match(req.path, app.middleware[index].path);
-                if (match){
-                    fill_params(req, app.middleware[index].path);
-                    app.middleware[index].handler(req, res, function (){
-                        app(req, res, index+1);
-                    });
+        try {
+            while (index < app.middleware.length){
+                if (app.middleware[index].method === "USE" ||
+                        app.middleware[index].method === req.method ){
+                    match = does_path_match(req.path, app.middleware[index].path);
+                    if (match){
+                        fill_params(req, app.middleware[index].path);
+                        app.middleware[index].handler(req, res, function (){
+                            app(req, res, index+1);
+                        });
+                    }
                 }
+                index += 1;
             }
-            index += 1;
+        } catch (e) {
+            res.status_code = "500";
+            res.reason_phrase = "Internal Server Error";
+            res.entity_headers["Content-Type"] = "text/plain";
+            res.general_headers["Connection"] = "close";
+            res.message_body = "Internal Server Error";
+            res.send();
         }
     };
     var server = new hujinet(app); //create a new huji net server
