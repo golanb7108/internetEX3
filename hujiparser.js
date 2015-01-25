@@ -113,7 +113,6 @@ function parse_request(req_lines){
         }
     }
 
-    http_req.host = url.parse(http_req.url).hostname;
     req_header_tmp = req_header_tmp.split(settings.HTTP_STR)[1];
     if (!trim(req_header_tmp).match(settings.HTTP_VERSION_FORMAT)){
         throw settings.bad_request_format_error;
@@ -141,6 +140,9 @@ function parse_request(req_lines){
                 trim(cookies_list[cookie_num].split('=')[1]);
         }
     }
+
+    http_req.host = http_req.get('Host');
+
     if ((settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)) &&
             (http_req.request_fields[settings.find_key_in_list(settings.BODY_LENGTH_HEADER,
             http_req.request_fields)] != "0")){
