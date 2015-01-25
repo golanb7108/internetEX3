@@ -140,7 +140,6 @@ function parse_request(req_lines){
                 trim(cookies_list[cookie_num].split('=')[1]);
         }
     }
-
     http_req.host = http_req.get('Host');
 
     if ((settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)) &&
@@ -164,7 +163,10 @@ function parse_request(req_lines){
             [settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)]))){
         throw settings.not_finished_request_error;
     }
-    body_parser(http_req);
+
+//    body_parser(http_req); // According to the moodle forum - this parsing is not needed
+                             // We decided to keep it in the code since it was one of the demands
+                             // in the express API for request's param function
     return http_req;
 }
 
