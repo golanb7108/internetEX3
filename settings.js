@@ -17,7 +17,7 @@ exports.BODY_LENGTH_HEADER = "Content-Length";
 exports.BODY_TYPE_HEADER = "Content-Type";
 exports.METHODS_OPTIONS = ["GET","POST","PUT","DELETE","TRACE","OPTIONS", "CONNECT"];
 exports.STATUS_PHRASES = {200: "OK",
-                          500: "Parsing error",
+                          500: "Internal Server Error",
                           404: "Not found"};
 exports.DEFALUT_TIME_TO_EXPIRE = 1000000;
 exports.DELETE_ALL = -1;
