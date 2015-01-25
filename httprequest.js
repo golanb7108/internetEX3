@@ -11,13 +11,13 @@ var HttpRequest = function (){
     this.url = null;
     this.protocol = null;
     this.http_ver = null;
-    this.request_fields = {};
+    this.headers = {};
     this.params = {};
     this.query = {};
     this.cookies = {};
     this.path = null;
     this.host = null;
-    this.message_body = null;
+    this.body = null;
     this.body_params = {};
 
     // Return the value of param name when present.
@@ -38,8 +38,8 @@ var HttpRequest = function (){
     // Get the case-insensitive request header field.
     // The Referrer and Referer fields are interchangeable.
     this.get = function (field){
-        if (settings.find_key_in_list(field,this.request_fields)){
-            return this.request_fields[settings.find_key_in_list(field,this.request_fields)];
+        if (settings.find_key_in_list(field,this.headers)){
+            return this.headers[settings.find_key_in_list(field,this.headers)];
         }
         return "";
     };
@@ -59,13 +59,13 @@ HttpRequest.prototype.print = function (){
     console.log(this.url);
     console.log(this.protocol);
     console.log(this.http_ver);
-    console.log(this.request_fields);
+    console.log(this.headers);
     console.log(this.params);
     console.log(this.query);
     console.log(this.cookies);
     console.log(this.path);
     console.log(this.host);
-    console.log(this.message_body);
+    console.log(this.body);
     console.log(this.body_params);
 };
 

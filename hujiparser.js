@@ -109,7 +109,9 @@ function parse_request(req_lines){
         query = http_req.url.substring(ind + 1).split('&');
         for (var j = 0; j < query.length; j++) {
             query_pair = query[j].split('=');
-            http_req.query[trim(query_pair[0])] = trim(query_pair[1]);
+            var key = decodeURIComponent(query_pair[0].replace(/\+/g, ' ')).trim();
+            var value = decodeURIComponent(query_pair[1].replace(/\+/g, ' ')).trim();
+            http_req.query[key] = value;
         }
     }
 
@@ -129,7 +131,7 @@ function parse_request(req_lines){
                 (sep_loc === req_lines[line_index].length-1)){
             throw settings.bad_request_format_error;
         }
-        http_req.request_fields[trim(req_lines[line_index].substring(0,
+        http_req.headers[trim(req_lines[line_index].substring(0,
                 sep_loc))] = trim(req_lines[line_index].substring(sep_loc+1));
         line_index += 1;
     }
@@ -142,25 +144,25 @@ function parse_request(req_lines){
     }
     http_req.host = http_req.get('Host');
 
-    if ((settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)) &&
-            (http_req.request_fields[settings.find_key_in_list(settings.BODY_LENGTH_HEADER,
-            http_req.request_fields)] != "0")){
+    if ((settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.headers)) &&
+            (http_req.headers[settings.find_key_in_list(settings.BODY_LENGTH_HEADER,
+            http_req.headers)] != "0")){
         line_index += 1;
         if (line_index >= req_lines.length){
             throw settings.not_finished_request_error;
         }
-        http_req.message_body = "";
-        http_req.message_body += req_lines[line_index++];
+        http_req.body = "";
+        http_req.body += req_lines[line_index++];
         while ((line_index < req_lines.length) &&
-                (http_req.message_body.length <
-                parseInt(http_req.request_fields[settings.BODY_LENGTH_HEADER]))){
-            http_req.message_body += settings.LINE_END;
-            http_req.message_body += req_lines[line_index++];
+                (http_req.body.length <
+                parseInt(http_req.headers[settings.BODY_LENGTH_HEADER]))){
+            http_req.body += settings.LINE_END;
+            http_req.body += req_lines[line_index++];
         }
     }
-    if ((settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)) &&
-            (http_req.message_body.length < parseInt(http_req.request_fields
-            [settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.request_fields)]))){
+    if ((settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.headers)) &&
+            (http_req.body.length < parseInt(http_req.headers
+            [settings.find_key_in_list(settings.BODY_LENGTH_HEADER, http_req.headers)]))){
         throw settings.not_finished_request_error;
     }
 
@@ -177,10 +179,10 @@ function body_parser(request){
         param;                                              // New param
     if (body_type){
         if (body_type.split(';')[0] === types.get_type('.json')){
-            request.body_params = JSON.parse(request.message_body);
+            request.body_params = JSON.parse(request.body);
         } else if ((body_type.split(';')[0] === types.get_type('.http_post1')) ||
                 (body_type.split(';')[0] === types.get_type('.http_post2'))){
-            param_pairs = request.message_body.split('&');
+            param_pairs = request.body.split('&');
             for (param in param_pairs){
                 if (trim(param).match(/=/g)){
                     request.body_params[trim(param.split('=')[0])] = trim(param.split('=')[1]);

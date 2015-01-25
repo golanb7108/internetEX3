@@ -19,7 +19,7 @@ var HttpResponse = function (con_socket, connection_open){
     this.general_headers = {};
     this.response_headers = {};
     this.entity_headers = {};
-    this.message_body = null;
+    this.body = null;
 
     // Return a string phrase of the response.
     this.toString = function (){
@@ -51,9 +51,9 @@ var HttpResponse = function (con_socket, connection_open){
             }
             response_str += settings.LINE_END;
         }
-        if (this.message_body != null){
-            response_str += settings.LINE_END;
-            response_str += this.message_body +settings. LINE_END;
+        response_str += settings.LINE_END;
+        if (this.body != null && this.body !== ""){
+            response_str += this.body +settings. LINE_END;
         }
         return response_str;
     };
@@ -143,9 +143,12 @@ var HttpResponse = function (con_socket, connection_open){
 
     // Send a response.
     this.send = function (body){
-        if ((body !== undefined) && (body !== null)){
-            if (body == ""){
-                this.message_body = "";
+        if ((body === undefined) || (body === null)) {
+            body = "";
+        }
+            if (body === ""){
+                this.body = "";
+                this.set(settings.BODY_LENGTH_HEADER, 0);
             }
             else {
                 if (typeof body === 'object') {
@@ -159,13 +162,13 @@ var HttpResponse = function (con_socket, connection_open){
                         this.set(settings.BODY_TYPE_HEADER, types.get_type('.html'));
                     }
                 }
-                this.message_body = (typeof body === 'number') ? body.toString() : body;
+                this.body = (typeof body === 'number') ? body.toString() : body;
                 if (this.entity_headers[settings.BODY_LENGTH_HEADER] === undefined){
-                    var len = (this.message_body) ? this.message_body.length : 0;
+                    var len = (this.body) ? this.body.length : 0;
                     this.set(settings.BODY_LENGTH_HEADER, len);
                 }
             }
-        }
+
         this.socket.write(this.toString(), 'binary');
         // Close the socket after sending if it was requested
         this.socket.on('drain', function (){
@@ -196,7 +199,7 @@ HttpResponse.prototype.print = function (){
     console.log(this.general_headers);
     console.log(this.response_headers);
     console.log(this.entity_headers);
-    console.log(this.message_body);
+    console.log(this.body);
 
 };
 

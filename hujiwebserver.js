@@ -57,7 +57,7 @@ exports.static = function (rootFolder){
                 //http_res.reason_phrase = settings.STATUS_PHRASES[404];
                 //http_res.entity_headers["Content-Type"] = "text/plain";
                 //http_res.general_headers["Connection"] = "close";
-                //http_res.message_body = "The requested URL " + file +
+                //http_res.body = "The requested URL " + file +
                 //" was not found on this server";
                 http_res.status(404).send();
                 next();

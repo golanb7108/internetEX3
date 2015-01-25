@@ -30,9 +30,13 @@ var hujidynamicserver = function ()
                         app.middleware[index].handler(req, res, function (){
                             app(req, res, index+1);
                         });
+                        return;
                     }
                 }
                 index += 1;
+            }
+            if (index === app.middleware.length) {
+                res.status(404).send("The requested resource not found");
             }
         } catch (e) {
             res.status(500).send("Internal Server Error");
@@ -166,29 +170,27 @@ function does_path_match(req_path, middleware_path){
     var reqex,              // Regular exprestion of the middle path
         midd_path_list,     // List of all middleware path elements
         theReg;             // The pattern to be checked
-    if(middleware_path.indexOf(':') === -1){
-        regex = new RegExp('^' + middleware_path, 'i');
-        return regex.test(req_path);
-    } else {
-        midd_path_list = middleware_path.split('\/');
-        if (midd_path_list.length === 0)
-            return true;
 
-        regex = "^";
-        for (var i = 0; i < midd_path_list.length; i++) {
-            if (midd_path_list[i] !== "") {
-                regex += "\/";
-                if (!midd_path_list[i].match(/:/g)) {
-                    regex += midd_path_list[i];
-                }
-                else {
-                    regex += "([^\/]+?)";
-                }
+    midd_path_list = middleware_path.split('\/');
+    if (midd_path_list.length === 0)
+        return true;
+
+    regex = "^";
+    for (var i = 0; i < midd_path_list.length; i++) {
+        if (midd_path_list[i] !== "") {
+            regex += "\/";
+            if (!(midd_path_list[i].match(/:/g))) {
+                regex += midd_path_list[i];
+            }
+            else {
+                regex += "(?:([^\/]+?))";
             }
         }
-        theReg = new RegExp(regex, "i");
-        return req_path.match(theReg);
     }
+    regex += '($|\/)';
+
+    theReg = new RegExp(regex, "i");
+    return req_path.match(theReg);
 }
 
 module.exports = hujidynamicserver;

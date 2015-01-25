@@ -16,14 +16,14 @@ var url = require('url');
 
 /* Check if the socket has to be closed after http request */
 function check_close(http_req){
-    if (settings.find_key_in_list("Connection", http_req.request_fields) &&
-            http_req.request_fields[settings.find_key_in_list
-            ("Connection", http_req.request_fields)].toLowerCase() === "close"){
+    if (settings.find_key_in_list("Connection", http_req.headers) &&
+            http_req.headers[settings.find_key_in_list
+            ("Connection", http_req.headers)].toLowerCase() === "close"){
         return true;
     }
     if ((http_req.http_ver === '1.0') &&
-            (settings.find_key_in_list("Connection", http_req.request_fields) &&
-            http_req.request_fields[settings.find_key_in_list("Connection", http_req.request_fields)].toLowerCase()
+            (settings.find_key_in_list("Connection", http_req.headers) &&
+            http_req.headers[settings.find_key_in_list("Connection", http_req.headers)].toLowerCase()
             !== "keep-alive")){
         return true;
     }
@@ -32,7 +32,7 @@ function check_close(http_req){
 
 function send_error(socket, req){
     var resp = new httpresponse.HttpResponse(socket, false); // The error response
-    resp.set('Connection', req.request_fields[settings.find_key_in_list("Connection",req.request_fields)]);
+    resp.set('Connection', req.headers[settings.find_key_in_list("Connection",req.headers)]);
     resp.http_ver = req.http_ver;
     resp.status(500).send();
 }
@@ -52,8 +52,8 @@ var hujinet = function (handler){
                 }
                 else{
                     resp = new httpresponse.HttpResponse(socket, check_close(req_list[i]));
-                    resp.set('Connection', req_list[i].request_fields[settings.find_key_in_list
-                            ("Connection",req_list[i].request_fields)]);
+                    resp.set('Connection', req_list[i].headers[settings.find_key_in_list
+                            ("Connection",req_list[i].headers)]);
                     resp.http_ver = req_list[i].http_ver;
                     myhujinet.emit('request', req_list[i], resp);
                 }
