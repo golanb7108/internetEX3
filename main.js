@@ -12,8 +12,9 @@ var parser = require('./hujiparser');
 /* Server variables */
 var port = 8124;
 
-hujiserver.start(port,function(e, server) {
-    e?(console.log(e)):(console.log('server is up'));
+/* Open new hujiwebserver, define handlers and listen to new requests */
+hujiserver.start(port,function (e, server){
+    e ? (console.log(e)) : (console.log('server is up'));
     if (typeof server !== 'undefined'){
         console.log("server start");
 
@@ -29,11 +30,12 @@ hujiserver.start(port,function(e, server) {
     }
 });
 
+/* Register new user */
 function register(request, response, next){
-    var session_id,
-        user_name;
+    var session_id, // User's session id
+        user_name;  // User's name
     try {
-        parser.body_parser(request)
+        parser.body_parser(request);
         if (request.body_params === undefined){
             throw settings.bad_request_format_error;
         }
@@ -52,12 +54,13 @@ function register(request, response, next){
     return settings.SUCCESS;
 }
 
+/* Login user into program */
 function login(request, response, next){
-    var password,
-        session_id,
-        user_name;
+    var password,   // User's password
+        session_id, // User's session id
+        user_name;  // User's name
     try {
-        parser.body_parser(request)
+        parser.body_parser(request);
         if (request.body_params === undefined){
             throw settings.bad_request_format_error;
         }
@@ -76,6 +79,7 @@ function login(request, response, next){
     return settings.SUCCESS;
 }
 
+/* Return a list of all to-do items for user */
 function get_all_todo_items(request, response, next){
     var items = [],
         session_id,
@@ -101,6 +105,7 @@ function get_all_todo_items(request, response, next){
     }
 }
 
+/* Add new to-do item to the to-do list for a user */
 function add_item_to_todo_items(request, response, next){
     var session_id,
         task_id,
@@ -125,6 +130,7 @@ function add_item_to_todo_items(request, response, next){
     return settings.SUCCESS;
 }
 
+/* Update a to-do item parameters in the to-do list of a user */
 function update_item_in_todo_items(request, response, next){
     var session_id,
         task_id,
@@ -152,6 +158,7 @@ function update_item_in_todo_items(request, response, next){
     return settings.SUCCESS;
 }
 
+/* Delete a to-do item from the to-do list of a user */
 function delete_item_in_todo_items(request, response, next){
     var session_id,
         task_id,
