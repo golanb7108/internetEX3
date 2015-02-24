@@ -5,28 +5,61 @@
 var task_line =  document.getElementById("new-todo");
 
 function setTaskInHTML (div, task, i) {
+    var completeClass = '',
+        checkClass = '';
 
     var template
         =	'<li data-id="{{id}}" class="{{completed}}" onblur="editItemDone({{id}})">'
         +		'<div class="view">'
-        +			'<input class="toggle" type="checkbox" {{checked}}>'
+        +			'<input class="toggle" onclick="checkBox({{id}})" type="checkbox" {{checked}}>'
         +			'<label  ondblclick="editLabel({{id}})" >{{value}}</label>'
         +			'<button class="destroy" onclick="deleteItem({{id}})"></button>'
         +		'</div>'
         +	'</li>';
-
+    if (task.completed === 1){
+        completeClass = 'completed';
+        checkClass = 'checked';
+    }
     template = template.replace(/\{\{id}}/g, task.id);
     template = template.replace(/\{\{value}}/g, task.value);
-    template = template.replace('{{completed}}', task.completed);
-    if (task.completed === 1){
-        template = template.replace('{{checked}}', 'checked');
-    }
-    else {
-        template = template.replace('{{checked}}', '');
-    }
+    template = template.replace('{{completed}}', completeClass);
+    template = template.replace('{{checked}}', checkClass);
 
     div.innerHTML += (template);
 }
+
+function checkBox(id){
+    var listTodo = document.querySelector('[data-id="' + id + '"]');
+    if (!listTodo) {
+        return;
+    }
+    var value = listTodo.getElementsByTagName('label')[0].firstChild.data;
+    var oldStatus = listTodo.className;
+    var newStatus = oldStatus === "" ? "completed" : "";
+    var todoStatus = newStatus === "" ? 0 : 1;
+
+    $.ajax({
+        url: "/item",
+        type: "PUT",
+
+        data: JSON.stringify({id: id, value: value, completed: todoStatus}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (result, status, xhr) {
+            alert("update completed success");
+
+            listTodo.className = newStatus;
+            listTodo.querySelector('input').checked = todoStatus;
+            fillList();
+        },
+        error: function (xhr, status, error) {
+            if (xhr.status === 200){
+                listTodo.className = newStatus;
+                listTodo.querySelector('input').checked = todoStatus;
+                fillList();
+            }
+        }
+    });}
 
 function editLabel(id) {
     var listItem = qs('[data-id="' + id + '"]');
