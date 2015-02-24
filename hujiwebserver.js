@@ -53,14 +53,7 @@ exports.static = function (rootFolder){
         file = fixedRoot + path.normalize(url_pathname);
         fs.readFile(file, function (err, data) {
             if (err) {
-                //http_res.status_code = "404";
-                //http_res.reason_phrase = settings.STATUS_PHRASES[404];
-                //http_res.entity_headers["Content-Type"] = "text/plain";
-                //http_res.general_headers["Connection"] = "close";
-                //http_res.body = "The requested URL " + file +
-                //" was not found on this server";
-                http_res.status(404).send();
-                next();
+                http_res.status(404).send("Not found");
             }
             else {
                 http_res.status(200).send(data.toString());

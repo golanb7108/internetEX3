@@ -1,17 +1,26 @@
 /**
  * Created by Amit Abel and Golan Ben Ami
- */
 
-/* All Requires */
+
+/* All requires */
 var http = require('http');
 var hujiserver = require('./hujiwebserver');
 
 /* Server variables */
-var port = 8124;
-var server_id = 0;
+port = 8888;
 
-server_id = hujiserver.start(port, '/EX2', function (e){
-    e?(console.log(e)):(console.log('Server is up'));
+hujiserver.start(port, function (e, server){
+    e?(console.log(e)):(console.log('server is up'));
+    if (typeof server !== 'undefined'){
+        console.log("test.start");
+        // First - create a static handler for the server and load it.
+        server.use('/EX2', hujiserver.static('/www'));
+
+        setTimeout(function (){
+            console.log("Close server");
+            server.stop();
+        }, 7000);
+    }
 });
 
 
@@ -33,7 +42,7 @@ function load_test(){
     var load_counter = 0;   // The number of packets which were gotten
     var i;                                                  // Counter
     for (i = 0; i < load_factor; i++) {
-        req = http.get(getOptions('localhost', '8124','/main.js','close'),
+        req = http.get(getOptions('localhost', '8888','/EX2/index.html','close'),
             function(resp){
                 resp.on('data', function (data){
                     if (resp.statusCode === 200){
@@ -49,15 +58,10 @@ function load_test(){
                 resp.on('error',function (error){
                     console.log('expect_404_test failed on: ' + error);
                 });
-            });
+            }).on('error', console.log);
     }
 }
 
 load_test();
 
-setTimeout(function (){
-    hujiserver.stop(server_id, function (e){
-        e?(console.log(e)):(console.log('server is down'));
-    });
-}, 5000);
 
