@@ -4,7 +4,7 @@
 
 var task_line =  document.getElementById("new-todo");
 
-function setTaskInHTML (div, task, i) {
+function setTaskInHTML (div, task, i){
     var completeClass = '',
         checkClass = '';
 
@@ -61,7 +61,7 @@ function checkBox(id){
         }
     });}
 
-function editLabel(id) {
+function editLabel(id){
     var listItem = qs('[data-id="' + id + '"]');
     var title = listItem.getElementsByTagName('label')[0].firstChild.data;
     if (!listItem) {
@@ -79,7 +79,7 @@ function editLabel(id) {
     input.value = title;
 }
 
-function editItemDone(id) {
+function editItemDone(id){
     var listItem = qs('[data-id="' + id + '"]');
 
     var title = listItem.querySelector('input.edit').value;
@@ -98,7 +98,7 @@ function editItemDone(id) {
     putItem(id, title, 0);
 }
 
-function fillList() {
+function fillList(){
     var all = document.getElementById('all');
     var completed = document.getElementById('completed');
     var active = document.getElementById('active');
@@ -137,7 +137,7 @@ function fillList() {
     });
 }
 
-function addItem() {
+function addItem(){
     var task = task_line.value;
     if (task === '') return;
 
@@ -173,7 +173,7 @@ function addItem() {
     });
 };
 
-function deleteItem(id) {
+function deleteItem(id){
     $.ajax({
         url: '/item',
         type: 'DELETE',
@@ -193,7 +193,7 @@ function deleteItem(id) {
 }
 
 
-function putItem(id, value, completed) {
+function putItem(id, value, completed){
     $.ajax({
         url: "/item",
         type: "PUT",
@@ -214,7 +214,7 @@ function putItem(id, value, completed) {
 }
 
 
-function login() {
+function login(){
 
     var username = document.getElementById("user_name");
     var password = document.getElementById("password");
@@ -246,7 +246,7 @@ function login() {
     });
 }
 
-function register() {
+function register(){
     var full_name = document.getElementById("full_name");
     var username = document.getElementById("reg_user_name");
     var password = document.getElementById("reg_pass_word");
@@ -285,7 +285,7 @@ function register() {
     });
 }
 
-function runScript(e) {
+function runScript(e){
     if (e.keyCode == 13) {
         addItem();
     }
