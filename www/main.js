@@ -165,7 +165,7 @@ function putItem(id, value, completed) {
         url: "/item",
         type: "PUT",
 
-        data: JSON.stringify({id: 0, value: task, completed: 0}),
+        data: JSON.stringify({id: id, value: value, completed: completed}),
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(data) {
