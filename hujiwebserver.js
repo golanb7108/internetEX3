@@ -54,6 +54,7 @@ exports.static = function (rootFolder){
         fs.readFile(file, function (err, data) {
             if (err) {
                 http_res.status(404).send("Not found");
+                next();
             }
             else {
                 http_res.status(200).send(data.toString());

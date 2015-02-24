@@ -7,6 +7,7 @@ var todoitems = require('./todoitems');
 var users = require('./users');
 var uuid = require('node-uuid');
 var hujiserver = require('./hujiwebserver');
+var parser = require('./hujiparser');
 
 /* Server variables */
 var port = 8124;
@@ -15,7 +16,7 @@ hujiserver.start(port,function(e, server) {
     e?(console.log(e)):(console.log('server is up'));
     if (typeof server !== 'undefined'){
         console.log("server start");
-        server.use('/', hujiserver.static('/www'));
+
         server.post('/register', register);
         server.post('/login', login);
 
@@ -23,6 +24,8 @@ hujiserver.start(port,function(e, server) {
         server.post('/item', add_item_to_todo_items);
         server.put('/item', update_item_in_todo_items);
         server.delete('/item', delete_item_in_todo_items);
+        server.use('/', hujiserver.static('/www'));
+
     }
 });
 
@@ -30,6 +33,7 @@ function register(request, response, next){
     var session_id,
         user_name;
     try {
+        parser.body_parser(request)
         if (request.body_params === undefined){
             throw settings.bad_request_format_error;
         }
@@ -53,6 +57,7 @@ function login(request, response, next){
         session_id,
         user_name;
     try {
+        parser.body_parser(request)
         if (request.body_params === undefined){
             throw settings.bad_request_format_error;
         }
@@ -102,6 +107,7 @@ function add_item_to_todo_items(request, response, next){
         task_value,
         user_name;
     try {
+        parser.body_parser(request)
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
         task_value = request.body_params['value'];
@@ -126,6 +132,7 @@ function update_item_in_todo_items(request, response, next){
         task_status,
         user_name;
     try {
+        parser.body_parser(request)
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
         task_id = parseInt(request.body_params['id']);
@@ -150,6 +157,7 @@ function delete_item_in_todo_items(request, response, next){
         task_id,
         user_name;
     try {
+        parser.body_parser(request)
         user_name = request.cookies['user_name'];
         session_id = request.cookies['sessionId'];
         task_id = parseInt(request.body_params['id']);

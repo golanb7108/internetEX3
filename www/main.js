@@ -223,7 +223,7 @@ function register() {
         url: "/register",
         type: "POST",
         data: JSON.stringify({full_name: full_name.value, user_name:username.value, password:password.value, verify_password:ver_password.value}),
-        dataType: "jsonp",
+        dataType: "json",
         cache: false,
         contentType: "application/json; charset=utf-8",
         success: function(data, textStatus) {

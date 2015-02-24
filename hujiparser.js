@@ -194,3 +194,4 @@ function body_parser(request){
 
 exports.parse = parse;
 exports.trim = trim;
+exports.body_parser = body_parser;
