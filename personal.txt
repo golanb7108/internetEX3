@@ -1,0 +1,9 @@
+1. What was hard?
+    learning the correct way to use ajax was the most tricky part in this ex.
+	Once learning it - the implementation was fluid.
+2. What was easy?
+    Handling the UI was kind of easy - mainly the static html.
+3. About the course:
+   The course definitely introduces one to the newest internet technologies.
+   I think that the difficulty of the course is needed - the ex's really make you know 
+   each of the topics learned.

@@ -1,0 +1,13 @@
+Ex5 testing
+
+Golan -
+1. tester
+2. tester.txt.
+4. clear the css of erased buttons.
+
+amit -
+2. express.
+3. fix the code looking.
+4. fix the login section so it is GET method.
+
+
