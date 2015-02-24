@@ -1,0 +1,96 @@
+
+body{
+    background-color: ivory;
+}
+
+#login, #calculator {
+    color: darkslategray;
+    width: 280px;
+    height:140px;
+    margin-left: 400px;
+    margin-top: 20px;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 3px;
+    background-color: ghostwhite;
+    border: 2px solid gray;
+}
+
+#profile{
+    padding-top: 20px;
+    padding-left: 400px;
+    font-weight: bold;
+    color: darkslategray;
+}
+
+#calculator{
+    color: darkslategray;
+    width: 380px;
+    height:140px;
+    margin-left: 400px;
+    margin-top: 20px;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 3px;
+    background-color: ghostwhite;
+    border: 2px solid gray;
+}
+
+#submit_button{
+    color: white;
+    background-color: darkslategrey;
+    font-size: 18px;
+    border: 2px solid gray;
+    padding: 12px;
+    border-radius: 3px;
+    margin-left: 187px;
+}
+
+#password{
+    margin-left: 4px;
+}
+
+#prof_pict{
+    width: 400px;
+}
+
+#plus_button, #mult_button{
+    font-size: 18px;
+    color: lightgoldenrodyellow;
+    background-color: darkslategrey;
+    margin-right: 15px;
+}
+
+#plus_button{
+    margin-left: 150px;
+}
+
+
+#result_screen{
+    margin-left: 58px;
+    margin-right: 70px;
+}
+
+#result_value{
+    background-color: gainsboro;
+    font-size: 18px;
+    width: 400px;
+}
+
+#clear_button{
+    margin-left: 30px;
+}
+
+
+#calc_button, #re_profile_button, #logout_button_prof, #logout_button_calc, #clear_button{
+    color: white;
+    background-color: darkslategrey;
+    font-size: 15px;
+    padding: 7px;
+    border-radius: 3px;
+}
+
+
+#logout_button_prof, #logout_button_calc{
+    margin-left: 10px;
+}
