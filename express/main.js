@@ -1,0 +1,175 @@
+/**
+ * Created by Amit Abel and Golan Ben Ami
+ */
+
+var settings = require('./settings');
+var todoitems = require('./todoitems');
+var users = require('./users');
+var uuid = require('node-uuid');
+var express = require('express');
+var parser = require('./hujiparser');
+
+/* Server variables */
+var port = 8124;
+
+var app = express();
+
+app.post('/login', login);
+app.post('/register', register);
+app.get('/item', get_all_todo_items);
+app.post('/item', add_item_to_todo_items);
+app.put('/item', update_item_in_todo_items);
+app.delete('/item', delete_item_in_todo_items);
+
+app.use(express.static(__dirname + '/www'));
+app.listen(port);
+
+function register(request, response, next){
+    var session_id,
+        user_name;
+    try {
+        parser.body_parser(request)
+        if (request.body_params === undefined){
+            throw settings.bad_request_format_error;
+        }
+        session_id = uuid.v1();
+        user_name = request.body_params['user_name'];
+        users.add_user(user_name,request.body_params['full_name'],request.body_params['password'],
+                request.body_params['verify_password'],session_id);
+        todoitems.new_user_todo_list(user_name);
+        response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
+        response.cookie('sessionId', session_id, {'expires':users.get_user_by_name(user_name).time_to_expire});
+        response.status(200).send(settings.STATUS_PHRASES[200]);
+    } catch (e) {
+        response.status(500).send(e.message);
+        return settings.FAILURE;
+    }
+    return settings.SUCCESS;
+}
+
+function login(request, response, next){
+    var password,
+        session_id,
+        user_name;
+    try {
+        parser.body_parser(request)
+        if (request.body_params === undefined){
+            throw settings.bad_request_format_error;
+        }
+        user_name = request.body_params['user_name'];
+        password = request.body_params['password'];
+        session_id = uuid.v1();
+        if (users.try_to_login(user_name, password, session_id)){
+            response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
+            response.cookie('sessionId', session_id, {'expires':users.get_user_by_name(user_name).time_to_expire});
+            response.status(200).send(settings.STATUS_PHRASES[200]);
+        }
+    } catch (e) {
+        response.status(500).send(e.message);
+        return settings.FAILURE;
+    }
+    return settings.SUCCESS;
+}
+
+function get_all_todo_items(request, response, next){
+    var items = [],
+        session_id,
+        task_id,
+        user_name;
+    try {
+        user_name = request.cookies['user_name'];
+        session_id = request.cookies['sessionId'];
+        if ((user_name === undefined) || (session_id === undefined)){
+            throw settings.bad_request_format_error;
+        }
+        if (users.check_user_valid(user_name, session_id)){
+            for (task_id in Object.keys(todoitems.get_item_by_user(user_name))){
+                items[task_id] = {};
+                items[task_id]['id'] = task_id;
+                items[task_id]['value'] = todoitems.get_item_by_user(user_name)[task_id].task;
+                items[task_id]['completed'] = todoitems.get_item_by_user(user_name)[task_id].completed;
+            }
+            response.status(200).json(items);
+        }
+    } catch (e) {
+        response.status(500).send(e.message);
+    }
+}
+
+function add_item_to_todo_items(request, response, next){
+    var session_id,
+        task_id,
+        task_value,
+        user_name;
+    try {
+        parser.body_parser(request)
+        user_name = request.cookies['user_name'];
+        session_id = request.cookies['sessionId'];
+        task_value = request.body_params['value'];
+        if ((user_name === undefined) || (session_id === undefined) || (task_value === undefined)){
+            throw settings.bad_request_format_error;
+        }
+        if (users.check_user_valid(user_name, session_id)){
+            todoitems.add_item_to_user(user_name, task_value);
+            response.status(200).send(settings.STATUS_PHRASES[200]);
+        }
+    } catch (e) {
+        response.status(500).send(e.message);
+        return settings.FAILURE;
+    }
+    return settings.SUCCESS;
+}
+
+function update_item_in_todo_items(request, response, next){
+    var session_id,
+        task_id,
+        task_value,
+        task_status,
+        user_name;
+    try {
+        parser.body_parser(request)
+        user_name = request.cookies['user_name'];
+        session_id = request.cookies['sessionId'];
+        task_id = parseInt(request.body_params['id']);
+        task_value = request.body_params['value'];
+        task_status = request.body_params['completed'];
+        if ((user_name === undefined) || (session_id === undefined) || (task_id === undefined)){
+            throw settings.bad_request_format_error;
+        }
+        if (users.check_user_valid(user_name, session_id)){
+            todoitems.update_item_for_user(user_name, task_id, task_value, task_status);
+            response.status(200).send(settings.STATUS_PHRASES[200]);
+        }
+    } catch (e) {
+        response.status(500).send(e.message);
+        return settings.FAILURE;
+    }
+    return settings.SUCCESS;
+}
+
+function delete_item_in_todo_items(request, response, next){
+    var session_id,
+        task_id,
+        user_name;
+    try {
+        parser.body_parser(request)
+        user_name = request.cookies['user_name'];
+        session_id = request.cookies['sessionId'];
+        task_id = parseInt(request.body_params['id']);
+        if ((user_name === undefined) || (session_id === undefined) || (task_id === undefined)){
+            throw settings.bad_request_format_error;
+        }
+        if (users.check_user_valid(user_name, session_id)){
+            if (task_id === settings.DELETE_ALL){
+                todoitems.delete_all_items_for_user(user_name);
+            } else {
+                todoitems.delete_item_for_user(user_name, task_id);
+            }
+            response.status(200).send(settings.STATUS_PHRASES[200]);
+        }
+    } catch (e) {
+        response.status(500).send(e.message);
+        return settings.FAILURE;
+    }
+    return settings.SUCCESS;
+}
