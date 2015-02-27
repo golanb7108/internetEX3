@@ -1,17 +1,24 @@
 /**
- * Created by aabel on 15-Jan-15.
+ * Created by Amit Abel and Golan Ben Ami
  */
 
+/* All Requires */
 var settings = require('./settings');
 
-exports.username_already_exist_error = new Error("The user name is already in use. please enter a different user name");
-exports.bad_login_params_error = new Error("Your login params are not valid. Please insert new parameters");
-exports.passwords_dont_match_error = new Error("The passwords  and the verify password do not match");
-exports.password_incorrect_error = new Error("The passwords is incorrect please enter it again");
+/* Errors */
+exports.username_already_exist_error = new Error("The user name is already in use. " +
+        "please enter a different user name");
+exports.bad_login_params_error = new Error("Your login params are not valid. " +
+        "Please insert new parameters");
+exports.passwords_dont_match_error = new Error("The passwords  and the " +
+        "verify password do not match");
+exports.password_incorrect_error = new Error("The passwords is incorrect " +
+        "please enter it again");
 exports.user_expire_time_error = new Error("The expire time was over");
 
-var users_list = [];
+var users_list = []; // Users' id list
 
+/* User object */
 var User = function (full_name, password, session_id){
     this.full_name = full_name;
     this.password = password;
@@ -19,6 +26,7 @@ var User = function (full_name, password, session_id){
     this.time_to_expire = new Date(Date.now() + settings.DEFALUT_TIME_TO_EXPIRE);
 };
 
+/* Add new user to users list */
 function add_user(user_name, full_name, password, verify_password, session_id){
     if ((user_name === undefined) ||(full_name === undefined) || (password === undefined)
             || (verify_password === undefined) || (session_id === undefined)){
@@ -35,6 +43,7 @@ function add_user(user_name, full_name, password, verify_password, session_id){
     }
 }
 
+/* Get a user by its name */
 function get_user_by_name(user_name){
     if (users_list[user_name] === undefined){
         throw this.bad_login_params_error;
@@ -42,6 +51,7 @@ function get_user_by_name(user_name){
     return users_list[user_name];
 }
 
+/* Check if a user is valid while login */
 function try_to_login(user_name, password, session_id){
     if ((user_name === undefined) || (password === undefined) ||
             (session_id === undefined) || (users_list[user_name] === undefined)){
@@ -55,6 +65,7 @@ function try_to_login(user_name, password, session_id){
     return 1;
 }
 
+/* Check if a user is valid */
 function check_user_valid(user_name, session_id){
     if ((user_name === undefined) || (users_list[user_name] === undefined) ||
             (users_list[user_name].time_to_expire < Date.now) ||
