@@ -218,11 +218,14 @@ function login(){
 
     var username = document.getElementById("user_name");
     var password = document.getElementById("password");
-
+    var login_user = {
+        user_name: username.value,
+        password: password.value
+    };
     $.ajax ({
         url: "/login",
-        type: "POST",
-        data: JSON.stringify({user_name:username.value, password:password.value}),
+        type: "Get",
+        data: login_user,
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(data, textStatus, messageBody) {

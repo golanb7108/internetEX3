@@ -19,7 +19,7 @@ hujiserver.start(port,function (e, server){
         console.log("server start");
 
         server.post('/register', register);
-        server.post('/login', login);
+        server.get('/login', login);
 
         server.get('/item', get_all_todo_items);
         server.post('/item', add_item_to_todo_items);
@@ -40,9 +40,9 @@ function register(request, response, next){
             throw settings.bad_request_format_error;
         }
         session_id = uuid.v1();
-        user_name = request.body_params['user_name'];
-        users.add_user(user_name,request.body_params['full_name'],request.body_params['password'],
-                request.body_params['verify_password'],session_id);
+        user_name = request.param('user_name');
+        users.add_user(user_name,request.param('full_name'),request.param('password'),
+                request.param('verify_password'),session_id);
         todoitems.new_user_todo_list(user_name);
         response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
         response.cookie('sessionId', session_id, {'expires':users.get_user_by_name(user_name).time_to_expire});
@@ -60,12 +60,8 @@ function login(request, response, next){
         session_id, // User's session id
         user_name;  // User's name
     try {
-        parser.body_parser(request);
-        if (request.body_params === undefined){
-            throw settings.bad_request_format_error;
-        }
-        user_name = request.body_params['user_name'];
-        password = request.body_params['password'];
+        user_name = request.param('user_name');
+        password = request.param('password');
         session_id = uuid.v1();
         if (users.try_to_login(user_name, password, session_id)){
             response.cookie('user_name', user_name, {'expires':users.get_user_by_name(user_name).time_to_expire});
