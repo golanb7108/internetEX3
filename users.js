@@ -71,7 +71,7 @@ function try_to_login(user_name, password, session_id){
 /* Check if a user is valid */
 function check_user_valid(user_name, session_id){
     if ((user_name === undefined) || (users_list[user_name] === undefined) ||
-            (users_list[user_name].time_to_expire <= Date.now) ||
+            (users_list[user_name].time_to_expire <= new Date()) ||
             (users_list[user_name].session_id !== session_id)){
         throw this.bad_login_params_error;
     }
