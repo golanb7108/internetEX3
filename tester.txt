@@ -4,8 +4,11 @@ Golan -
 1. tester
 2. tester.txt.
 4. clear the css of erased buttons.
+5. the "clear all" button
+6. the tasks counter
 
 amit -
+1. session id time stamp
 2. express.
 3. fix the code looking.
 4. fix the login section so it is GET method.

@@ -17,30 +17,33 @@ var http = require('http'),
     };
 
 /* Server variables */
-port = 8124;
+var port = 8124;
+var cookie = '';
 
 
 //The options for the http require.
-function getOptions(host, port, path, connection, method, dataType, body) {
+function getOptions(host, port, path, uname, pw, connection, contentLength, contentType, method, dataType) {
     return {
         host: host,
         port: port,
-        path: path,
+        path: path + (uname ? ("?user_name=" + uname + "&password=" + pw) : ""),
         headers: {
-            'Connection': connection
+            'Connection': connection,
+            'content-length': contentLength,
+            'content-type': contentType
         },
         method: method,
-        dataType: dataType,
-        body: body
+        dataType: dataType
     };
+
+
 }
 
 // Test the server works well with a static handler - that it returns 200 for an existing file.
 function check_wrong_login(){
     console.log('Start test check_wrong_login...');
 
-    http.request(getOptions('localhost', '8124','/login','close', 'POST', 'json',
-        JSON.stringify({user_name:bad_user.uname, password:bad_user.pw})), function (resp){
+    http.request(getOptions('localhost', '8124','/login', bad_user.uname, bad_user.pw, 'close', "", "", 'GET', 'json'), function (resp){
         resp.on('data', function (data){
         if (resp.statusCode === 500){
                 console.log('\tcheck_wrong_login succeeded');
@@ -54,26 +57,80 @@ function check_wrong_login(){
     }).end();
 }
 
+function check_good_register(){
+    console.log('Start test check_good_register...');
+    var user = JSON.stringify({full_name: "a", user_name: "a",
+        password:"a", verify_password:"a"});
+    http.request(getOptions('localhost', '8124','/register', "", "", 'close', user.length,  'application/json; charset=utf-8', 'POST', 'json')
+        , function (resp){
+            resp.on('data', function (data){
+                if (resp.statusCode !== 200){
+                    console.log('\tcheck_good_login got data and failed on ' + resp.statusCode);
+                    return;
+                }
+                else {
+                    console.log('\tcheck_good_register succeed');
+                    return;
+                }
+            });
+            resp.on('error',function (error){
+                console.log('\tcheck_good_login failed on: ' + error);
+            });
+        }).end(user);
+}
+
 function check_good_login(){
     console.log('Start test check_good_login...');
-
-    http.request(getOptions('localhost', '8124','/register','close', 'POST', 'json',
-        {full_name: "a", user_name: "a",
-            password:"a", verify_password:"a"})
-        , function (resp){
+    var buff = '';
+    http.request(getOptions('localhost', '8124','/login', bad_user.uname, bad_user.pw, 'close', "", "", 'GET', 'json'), function (resp){
         resp.on('data', function (data){
-            if (resp.statusCode !== 200){
+            if (resp.statusCode === 200){
+                buff += data;
+            } else {
                 console.log('\tcheck_good_login failed on ' + resp.statusCode);
-                return;
             }
+        });
+        resp.on('end', function(){
+            var serverResp = buff;
+            cookie = serverResp.cookies;
+            console.log("cookie = " + cookie);
+            console.log('\tcheck_good_login succeeded');
         });
         resp.on('error',function (error){
             console.log('\tcheck_good_login failed on: ' + error);
         });
     }).end();
+}
 
-    http.request(getOptions('localhost', '8124','/login','close', 'POST', 'json',
-        {user_name:"a", password:"a"}), function (resp){
+function check_bad_register(){
+    console.log('Start test check_bad_register...');
+    var user = JSON.stringify({full_name: "a", user_name: "a",
+        password:"a", verify_password:"a"});
+    http.request(getOptions('localhost', '8124','/register', "", "", 'close', user.length,  'application/json; charset=utf-8', 'POST', 'json')
+        , function (resp){
+        resp.on('data', function (data){
+            if (resp.statusCode === 500){
+                console.log('\tcheck_bad_register succeed');
+                return;
+            }
+            else {
+                console.log('\tcheck_bad_register got data and failed on ' + resp.statusCode);
+                return;
+            }
+        });
+        resp.on('error',function (error){
+            console.log('\tcheck_bad_register failed on: ' + error);
+        });
+    }).end(user);
+
+}
+
+function check_adding_new_task(){
+    console.log('Start test check_adding_new_task...');
+    var task = "test ex5";
+    var new_task = JSON.stringify({id: 0, value: task, completed: 0});
+
+    http.request(getOptions('localhost', '8124','/login', bad_user.uname, bad_user.pw, 'close', "", "", 'GET', 'json'), function (resp){
         resp.on('data', function (data){
             if (resp.statusCode === 200){
                 console.log('\tcheck_good_login succeeded');
@@ -85,6 +142,51 @@ function check_good_login(){
             console.log('\tcheck_good_login failed on: ' + error);
         });
     }).end();
+
+
+    http.request(getOptions('localhost', '8124','/item', "", "", 'close', new_task.length,  'application/json; charset=utf-8', 'POST', 'json')
+        , function (resp){
+            resp.on('data', function (data){
+                if (resp.statusCode === 200){
+                    console.log('\tcheck_adding_new_task succeed');
+                    return;
+                }
+                else {
+                    console.log('\tcheck_adding_new_task got data and failed on ' + resp.statusCode);
+                    return;
+                }
+            });
+            resp.on('error',function (error){
+                console.log('\tcheck_adding_new_task failed on: ' + error);
+            });
+        }).end(new_task);
 }
+
+function get_existing_task(){
+    console.log('Start test get_existing_task...');
+    var task = "test ex5";
+    var new_task = JSON.stringify({id: 0, value: task, completed: 0});
+    http.request(getOptions('localhost', '8124','/register', "", "", 'close', new_task.length,  'application/json; charset=utf-8', 'GET', 'json')
+        , function (resp){
+            resp.on('data', function (data){
+                if (resp.statusCode === 200){
+                    console.log('\tcheck_adding_new_task succeed');
+                    return;
+                }
+                else {
+                    console.log('\tcheck_adding_new_task got data and failed on ' + resp.statusCode);
+                    return;
+                }
+            });
+            resp.on('error',function (error){
+                console.log('\tcheck_adding_new_task failed on: ' + error);
+            });
+        }).end(new_task);
+}
+
+
 check_wrong_login();
+check_good_register();
 check_good_login();
+check_bad_register();
+check_adding_new_task();
