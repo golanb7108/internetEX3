@@ -4,9 +4,9 @@ Ex5 testing
 2. test good register - register a new not existing user.
 3. test bad register - register with details of an existing user, should fail.
 4. test good login - login with a valid user registered.
-5.
-
-
-
+5. test adding a task - test that adding a task works
+6. get an existing task - test that the added tasks indeed is kept.
+7. test cookies and session id - check that the server responds only to a req that
+   holds the correct session id.
 
 
