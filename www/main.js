@@ -128,6 +128,7 @@ function fillList(){
             }
             else {
                 all_items = JSON.parse(JSON.stringify(data));
+                document.getElementById('counter').innerHTML = "Number of tasks = " + all_items.length;
                 for (i = 0; i < all_items.length; i++){
                     if (typeof all_items[i] === 'undefined') continue;
                     setTaskInHTML(all, all_items[i], i);
@@ -292,7 +293,7 @@ function register(){
                     activate_todo();
                 }
             } catch (e) {
-                alert("GOLAN");
+                alert("Fail");
             }
         },
         error: function(jqXHR,textStatus, errorThrown) {
