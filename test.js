@@ -18,11 +18,11 @@ var http = require('http'),
 
 /* Server variables */
 var port = 8124;
-var cookie = '';
+var cookie = "";
 
 
 //The options for the http require.
-function getOptions(host, port, path, uname, pw, connection, contentLength, contentType, method, dataType) {
+function getOptions(host, port, path, uname, pw, connection, contentLength, contentType, method, dataType, cookie) {
     return {
         host: host,
         port: port,
@@ -30,7 +30,8 @@ function getOptions(host, port, path, uname, pw, connection, contentLength, cont
         headers: {
             'Connection': connection,
             'content-length': contentLength,
-            'content-type': contentType
+            'content-type': contentType,
+            'cookie' : cookie
         },
         method: method,
         dataType: dataType
@@ -91,9 +92,7 @@ function check_good_login(){
             }
         });
         resp.on('end', function(){
-            var serverResp = buff;
-            cookie = serverResp.cookies;
-            console.log("cookie = " + cookie);
+
             console.log('\tcheck_good_login succeeded');
         });
         resp.on('error',function (error){
@@ -131,6 +130,11 @@ function check_adding_new_task(){
     var new_task = JSON.stringify({id: 0, value: task, completed: 0});
 
     http.request(getOptions('localhost', '8124','/login', bad_user.uname, bad_user.pw, 'close', "", "", 'GET', 'json'), function (resp){
+        cookie = JSON.stringify(resp.headers["set-cookie"]);
+        var cookie_list = cookie.split(",");
+        var user_cookie = cookie_list[0].split(";")[0].split("\"")[1];
+        var session_cookie = cookie_list[1].split(";")[0].split("\"")[1];
+        cookie = user_cookie + "; " + session_cookie;
         resp.on('data', function (data){
             if (resp.statusCode === 200){
                 console.log('\tcheck_good_login succeeded');
@@ -138,28 +142,31 @@ function check_adding_new_task(){
                 console.log('\tcheck_good_login failed on ' + resp.statusCode);
             }
         });
+        resp.on('end', function(){
+            http.request(getOptions('localhost', '8124','/item', "", "", 'close', new_task.length,  'application/json; charset=utf-8', 'POST', 'json', cookie)
+                , function (resp){
+                    resp.on('data', function (data){
+                        if (resp.statusCode === 200){
+                            console.log('\tcheck_adding_new_task succeed');
+                            return;
+                        }
+                        else {
+                            console.log(data + '\tcheck_adding_new_task got data and failed on ' + resp.statusCode);
+                            return;
+                        }
+                    });
+                    resp.on('error',function (error){
+                        console.log('\tcheck_adding_new_task failed on: ' + error);
+                    });
+                }).end(new_task);
+        });
         resp.on('error',function (error){
             console.log('\tcheck_good_login failed on: ' + error);
         });
     }).end();
 
 
-    http.request(getOptions('localhost', '8124','/item', "", "", 'close', new_task.length,  'application/json; charset=utf-8', 'POST', 'json')
-        , function (resp){
-            resp.on('data', function (data){
-                if (resp.statusCode === 200){
-                    console.log('\tcheck_adding_new_task succeed');
-                    return;
-                }
-                else {
-                    console.log('\tcheck_adding_new_task got data and failed on ' + resp.statusCode);
-                    return;
-                }
-            });
-            resp.on('error',function (error){
-                console.log('\tcheck_adding_new_task failed on: ' + error);
-            });
-        }).end(new_task);
+
 }
 
 function get_existing_task(){

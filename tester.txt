@@ -1,16 +1,12 @@
 Ex5 testing
 
-Golan -
-1. tester
-2. tester.txt.
-4. clear the css of erased buttons.
-5. the "clear all" button
-6. the tasks counter
+1. test bad login - try to login with a user that does not exist - should fail.
+2. test good register - register a new not existing user.
+3. test bad register - register with details of an existing user, should fail.
+4. test good login - login with a valid user registered.
+5.
 
-amit -
-1. session id time stamp
-2. express.
-3. fix the code looking.
-4. fix the login section so it is GET method.
+
+
 
 
