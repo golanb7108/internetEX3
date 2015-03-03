@@ -396,7 +396,7 @@ label[for='toggle-all'] {
 	font-weight: bold;
 }
 
-#logout {
+#logout, #clean-all {
 	float: right;
 	position: relative;
 	line-height: 20px;
@@ -412,6 +412,11 @@ label[for='toggle-all'] {
 #logout:hover {
 	background: darkblue;
 	box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+#clean-all:hover {
+    background: darkgreen;
+    box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.3);
 }
 
 #info {
