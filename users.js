@@ -24,7 +24,7 @@ var User = function (full_name, password, session_id){
     this.full_name = full_name;
     this.password = password;
     this.session_id = session_id;
-    this.time_to_expire = new Date(Date.now() + settings.DEFALUT_TIME_TO_EXPIRE);
+    this.time_to_expire = new Date(new Date() + settings.DEFALUT_TIME_TO_EXPIRE);
 };
 
 /* Add new user to users list */
