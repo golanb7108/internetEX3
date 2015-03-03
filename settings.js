@@ -20,11 +20,11 @@ exports.STATUS_PHRASES = {200: "OK",
                           500: "Internal Server Error",
                           404: "Not found"};
 exports.DEFALUT_TIME_TO_EXPIRE = 0.5; // Maximum time in hours before asked to login again
-exports.DELETE_ALL = -1;
+exports.DELETE_ALL_DONE = -1;
 exports.SUCCESS = 0;
 exports.FAILURE = 1;
-exports.ACTIVE_TASK = '0';
-exports.COMPLETED_TASK = '1';
+exports.ACTIVE_TASK = 0;
+exports.COMPLETED_TASK = 1;
 
 exports.find_key_in_list = function (search_key, list){
     var key,

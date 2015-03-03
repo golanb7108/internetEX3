@@ -73,10 +73,18 @@ function delete_item_for_user(user_name, item_id){
 
 /* Delete all items from user to-do list */
 function delete_all_items_for_user(user_name){
+    var index_id = 0; // index of single item
     if ((user_name === undefined) || (todo_items[user_name] === undefined)){
         throw settings.invalid_value_error;
     }
-    todo_items[user_name] = {};
+    while (todo_items[user_name][index_id]){
+        if (todo_items[user_name][index_id].completed === settings.COMPLETED_TASK){
+            delete_item_for_user(user_name, index_id);
+        }
+        else {
+            index_id += 1;
+        }
+    }
 }
 
 exports.new_user_todo_list = new_user_todo_list;
