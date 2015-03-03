@@ -174,7 +174,7 @@ function delete_item_in_todo_items(request, response, next){
             throw settings.bad_request_format_error;
         }
         if (users.check_user_valid(user_name, session_id)){
-            if (task_id === settings.DELETE_ALL){
+            if (task_id === settings.DELETE_ALL_DONE){
                 todoitems.delete_all_items_for_user(user_name);
             } else {
                 todoitems.delete_item_for_user(user_name, task_id);
