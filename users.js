@@ -9,12 +9,13 @@ var settings = require('./settings');
 exports.username_already_exist_error = new Error("The user name is already in use. " +
         "please enter a different user name");
 exports.bad_login_params_error = new Error("Your login params are not valid. " +
-        "Please insert new parameters");
+        "Please try to login again");
 exports.passwords_dont_match_error = new Error("The passwords  and the " +
         "verify password do not match");
 exports.password_incorrect_error = new Error("The passwords is incorrect " +
         "please enter it again");
 exports.user_expire_time_error = new Error("The expire time was over");
+
 
 var users_list = []; // Users' id list
 
@@ -61,18 +62,22 @@ function try_to_login(user_name, password, session_id){
         throw this.password_incorrect_error;
     }
     users_list[user_name].session_id = session_id;
-    users_list[user_name].time_to_expire = new Date(Date.now() + settings.DEFALUT_TIME_TO_EXPIRE);
+    users_list[user_name].time_to_expire = new Date();
+    users_list[user_name].time_to_expire.setHours(users_list[user_name].time_to_expire.getHours() +
+            exports.DEFALUT_TIME_TO_EXPIRE);
     return 1;
 }
 
 /* Check if a user is valid */
 function check_user_valid(user_name, session_id){
     if ((user_name === undefined) || (users_list[user_name] === undefined) ||
-            (users_list[user_name].time_to_expire < Date.now) ||
+            (users_list[user_name].time_to_expire <= new Date()) ||
             (users_list[user_name].session_id !== session_id)){
         throw this.bad_login_params_error;
     }
-    users_list[user_name].time_to_expire = new Date(Date.now() + settings.DEFALUT_TIME_TO_EXPIRE);
+    users_list[user_name].time_to_expire = new Date();
+    users_list[user_name].time_to_expire.setHours(users_list[user_name].time_to_expire.getHours() +
+            exports.DEFALUT_TIME_TO_EXPIRE);
     return 1;
 }
 

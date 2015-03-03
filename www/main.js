@@ -52,8 +52,6 @@ function checkBox(id){
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (result, status, xhr) {
-            alert("update completed success");
-
             listTodo.className = newStatus;
             listTodo.querySelector('input').checked = todoStatus;
             fillList();
@@ -63,6 +61,9 @@ function checkBox(id){
                 listTodo.className = newStatus;
                 listTodo.querySelector('input').checked = todoStatus;
                 fillList();
+            } else {
+                alert("error: " + jqXHR.status + " Checking item failed. Try again.");
+                activate_login()
             }
         }
     });}
@@ -123,6 +124,7 @@ function fillList(){
                 i;          // Single item index
             if (data.toString() === '500'){
                 alert("success: Loading list failed. Try again.");
+                activate_login()
             }
             else {
                 all_items = JSON.parse(JSON.stringify(data));
@@ -141,6 +143,7 @@ function fillList(){
         },
         error: function(jqXHR,textStatus, errorThrown) {
             alert("error: " + jqXHR.status + " Loading list failed. Try again.");
+            activate_login()
         }
     });
 }
@@ -160,6 +163,7 @@ function addItem(){
         success: function(data, textStatus) {
             if (data.toString() === '500'){
                 alert("Add Item failed");
+                activate_login();
             }
             else {
                 task_line.value = "";
@@ -174,6 +178,7 @@ function addItem(){
             }
             else{
                 alert(jqXHR.status + " Add Item failed");
+                activate_login();
             }
         }
     });
@@ -194,7 +199,10 @@ function deleteItem(id){
             if (jqXHR.status === 200) {
                 fillList();
             }
-            else alert("jqXHR.status:" + jqXHR.status + " " + errorThrown);
+            else {
+                alert("jqXHR.status:" + jqXHR.status + " " + errorThrown);
+                activate_login();
+            }
         }
     });
 }
@@ -215,7 +223,10 @@ function putItem(id, value, completed){
             if (jqXHR.status === 200) {
                 fillList();
             }
-            else alert("jqXHR.status:" + jqXHR.status + " " + errorThrown);
+            else {
+                alert("jqXHR.status:" + jqXHR.status + " " + errorThrown);
+                activate_login();
+            }
         }
     });
 }
